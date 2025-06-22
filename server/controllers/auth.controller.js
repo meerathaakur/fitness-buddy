@@ -1,6 +1,6 @@
 // controllers/auth.controller.js
 const User = require('../models/User');
-const OTP = require('../models/OTP');
+const OTP = require('../models/Otp.js');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const EmailHelper = require('../utils/emailHelpers');
