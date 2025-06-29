@@ -3,6 +3,7 @@ import { Search, MapPin, Filter, Heart, MessageCircle, Star, UserPlus } from 'lu
 import Card from '../../components/common/Card'
 import Button from '../../components/common/Button'
 import Avatar from '../../components/common/Avatar'
+import PageHeader from '../../components/common/PageHeader'
 import { toast } from '../../components/common/Toast'
 
 export default function BuddyFinder() {
@@ -157,12 +158,12 @@ export default function BuddyFinder() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Find Workout Buddies</h1>
-          <p className="text-gray-600 mt-1">Connect with fitness enthusiasts in your area</p>
-        </div>
-      </div>
+      <PageHeader
+        title="Find Workout Buddies"
+        subtitle="Connect with fitness enthusiasts in your area"
+        backTo="/dashboard"
+        showHome={true}
+      />
 
       {/* Search and Filters */}
       <Card className="p-6">

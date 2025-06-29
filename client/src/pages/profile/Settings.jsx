@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Save, Bell, Shield, User, Palette, Globe, Smartphone, Mail, Lock, Eye, EyeOff, Check, Sun, Moon, Monitor } from 'lucide-react'
 import Card from '../../components/common/Card'
 import Button from '../../components/common/Button'
+import PageHeader from '../../components/common/PageHeader'
 import { useAuth } from '../../hooks/useAuth'
 import { useTheme } from '../../hooks/useTheme'
 import { toast } from '../../components/common/Toast'
@@ -216,10 +217,12 @@ export default function Settings() {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div>
-                <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-                <p className="text-gray-600 mt-1">Manage your account preferences and privacy settings</p>
-            </div>
+            <PageHeader
+                title="Settings"
+                subtitle="Manage your account preferences and privacy settings"
+                backTo="/profile"
+                showHome={true}
+            />
 
             <div className="flex flex-col lg:flex-row gap-6">
                 {/* Sidebar */}

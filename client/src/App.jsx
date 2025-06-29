@@ -16,7 +16,7 @@ function App() {
         <NotificationProvider>
         <AuthProvider>
           <WorkoutProvider>
-              <main className="flex-grow mx-auto px-4 py-6">
+              <main className="flex-grow mx-auto">
                 <AppRouter />
               </main>
               <Toast />
