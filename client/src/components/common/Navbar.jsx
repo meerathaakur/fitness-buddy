@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Bell, Search, User, Settings, LogOut, MessageCircle, Users, Trophy, Calendar } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import Avatar from './Avatar'
+import webLogo from '/fitness.png'
 
 export default function Navbar() {
   const { user, logout } = useAuth()
@@ -91,7 +92,7 @@ export default function Navbar() {
           <div className="flex items-center justify-center space-x-4">
 
             <Link to="/dashboard" className="text-2xl font-bold text-primary-600">
-            <img src="/fitness.png" alt="FitnessBuddy" className='w-8 inline mr-2' />
+            <img src={webLogo} alt="FitnessBuddy" className='w-8 inline mr-2' />
 
               FitnessBuddy
             </Link>

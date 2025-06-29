@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, Users, Target, Trophy, MessageCircle } from 'lucide-react'
 import Button from '../components/common/Button'
 
+import bgImage from '../assets/image18.jpg'
+
 export default function Home() {
   const features = [
     {
@@ -29,7 +31,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 bg-center bg-cover bg-no-repeat"
-    style={{backgroundImage:"url('../src/assets/image18.jpg')"}}
+    style={{backgroundImage:`url(${bgImage})`}}
     >
       {/* Hero Section */}
       <div className="relative overflow-hidden">
