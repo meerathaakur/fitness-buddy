@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Plus, Target, Calendar, TrendingUp, Edit, Trash2, CheckCircle, Clock } from 'lucide-react'
 import Card from '../../components/common/Card'
 import Button from '../../components/common/Button'
+import PageHeader from '../../components/common/PageHeader'
 import { toast } from '../../components/common/Toast'
 
 export default function Goals() {
@@ -154,16 +155,17 @@ export default function Goals() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">My Goals</h1>
-          <p className="text-gray-600 mt-1">Track your fitness goals and celebrate achievements</p>
-        </div>
+      <PageHeader
+        title="My Goals"
+        subtitle="Track your fitness goals and celebrate achievements"
+        backTo="/dashboard"
+        showHome={true}
+      >
         <Button onClick={() => setShowAddGoal(true)}>
           <Plus className="w-4 h-4 mr-2" />
           Add New Goal
         </Button>
-      </div>
+      </PageHeader>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -247,6 +249,7 @@ export default function Goals() {
                   className="input w-full h-20 resize-none"
                   placeholder="Describe your goal..."
                 />
+
               </div>
 
               <div className="grid grid-cols-2 gap-4">

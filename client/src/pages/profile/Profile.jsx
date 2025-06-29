@@ -5,6 +5,7 @@ import { useAuth } from '../../hooks/useAuth'
 import Card from '../../components/common/Card'
 import Avatar from '../../components/common/Avatar'
 import Button from '../../components/common/Button'
+import PageHeader from '../../components/common/PageHeader'
 import { toast } from '../../components/common/Toast'
 
 const Profile = () => {
@@ -196,6 +197,31 @@ const Profile = () => {
 
   return (
     <div className="space-y-6">
+      {/* Header */}
+      <PageHeader 
+        title="My Profile"
+        subtitle="View and manage your fitness profile"
+        backTo="/dashboard"
+        showHome={true}
+      >
+        <Button variant="outline" onClick={handleShare}>
+          <Share2 className="w-4 h-4 mr-2" />
+          Share
+        </Button>
+        <Link to="/profile/edit">
+          <Button variant="outline">
+            <Edit className="w-4 h-4 mr-2" />
+            Edit Profile
+          </Button>
+        </Link>
+        <Link to="/settings">
+          <Button>
+            <Settings className="w-4 h-4 mr-2" />
+            Settings
+          </Button>
+        </Link>
+      </PageHeader>
+
       {/* Profile Header */}
       <Card className="p-6">
         <div className="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6">
@@ -214,40 +240,19 @@ const Profile = () => {
           </div>
           
           <div className="flex-1">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">{user.name}</h1>
-                <div className="flex items-center space-x-4 mt-2 text-gray-600">
-                  {user.location && (
-                    <div className="flex items-center">
-                      <MapPin className="w-4 h-4 mr-1" />
-                      <span>{user.location}</span>
-                    </div>
-                  )}
+            <div className="mb-4">
+              <h2 className="text-2xl font-bold text-gray-900">{user.name}</h2>
+              <div className="flex items-center space-x-4 mt-2 text-gray-600">
+                {user.location && (
                   <div className="flex items-center">
-                    <Calendar className="w-4 h-4 mr-1" />
-                    <span>Joined {new Date(user.joinedDate).toLocaleDateString()}</span>
+                    <MapPin className="w-4 h-4 mr-1" />
+                    <span>{user.location}</span>
                   </div>
+                )}
+                <div className="flex items-center">
+                  <Calendar className="w-4 h-4 mr-1" />
+                  <span>Joined {new Date(user.joinedDate).toLocaleDateString()}</span>
                 </div>
-              </div>
-              
-              <div className="flex space-x-3 mt-4 sm:mt-0">
-                <Button variant="outline" onClick={handleShare}>
-                  <Share2 className="w-4 h-4 mr-2" />
-                  Share
-                </Button>
-                <Link to="/profile/edit">
-                  <Button variant="outline">
-                    <Edit className="w-4 h-4 mr-2" />
-                    Edit Profile
-                  </Button>
-                </Link>
-                <Link to="/settings">
-                  <Button>
-                    <Settings className="w-4 h-4 mr-2" />
-                    Settings
-                  </Button>
-                </Link>
               </div>
             </div>
 

@@ -3,6 +3,7 @@ import { MessageCircle, Calendar, MoreVertical, UserMinus, Star, MapPin, Clock, 
 import Card from '../../components/common/Card'
 import Button from '../../components/common/Button'
 import Avatar from '../../components/common/Avatar'
+import PageHeader from '../../components/common/PageHeader'
 import { toast } from '../../components/common/Toast'
 
 export default function MyBuddies() {
@@ -151,15 +152,16 @@ export default function MyBuddies() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">My Fitness Buddies</h1>
-          <p className="text-gray-600 mt-1">Manage your workout partners and connections</p>
-        </div>
+      <PageHeader
+        title="My Fitness Buddies"
+        subtitle="Manage your workout partners and connections"
+        backTo="/dashboard"
+        showHome={true}
+      >
         <div className="text-sm text-gray-500">
           {buddies.length} total buddies
         </div>
-      </div>
+      </PageHeader>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -219,11 +221,10 @@ export default function MyBuddies() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                activeTab === tab.id
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === tab.id
                   ? 'border-primary-500 text-primary-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
+                }`}
             >
               {tab.label}
               <span className="ml-2 bg-gray-100 text-gray-900 py-0.5 px-2 rounded-full text-xs">
@@ -315,7 +316,7 @@ export default function MyBuddies() {
                     <span className="text-gray-600">Fitness Level</span>
                     <span className="font-medium text-gray-900 capitalize">{buddy.fitnessLevel}</span>
                   </div>
-                  
+
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-600">Total Workouts</span>
                     <span className="font-medium text-gray-900">{buddy.totalWorkouts}</span>
@@ -391,7 +392,7 @@ export default function MyBuddies() {
               </h3>
               <p className="text-gray-600 mb-4">
                 {activeTab === 'online' ? 'None of your buddies are currently online.' :
-                 'Start connecting with other fitness enthusiasts to build your buddy network.'}
+                  'Start connecting with other fitness enthusiasts to build your buddy network.'}
               </p>
               {activeTab === 'all' && (
                 <Button>

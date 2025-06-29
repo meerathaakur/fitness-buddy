@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Plus, Calendar, Clock, Flame, TrendingUp, Filter, Search } from 'lucide-react'
 import Card from '../../components/common/Card'
 import Button from '../../components/common/Button'
+import PageHeader from '../../components/common/PageHeader'
 import { useAuth } from '../../hooks/useAuth'
 
 export default function Workouts() {
@@ -105,16 +106,17 @@ export default function Workouts() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">My Workouts</h1>
-          <p className="text-gray-600 mt-1">Track and manage your fitness journey</p>
-        </div>
+      <PageHeader
+        title="My Workouts"
+        subtitle="Track and manage your fitness journey"
+        backTo="/dashboard"
+        showHome={true}
+      >
         <Button>
           <Plus className="w-4 h-4 mr-2" />
           Log New Workout
         </Button>
-      </div>
+      </PageHeader>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -212,9 +214,8 @@ export default function Workouts() {
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(workout.type)}`}>
                       {workout.type.charAt(0).toUpperCase() + workout.type.slice(1)}
                     </span>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      workout.completed ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                    }`}>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${workout.completed ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                      }`}>
                       {workout.completed ? 'Completed' : 'Planned'}
                     </span>
                   </div>
@@ -270,7 +271,7 @@ export default function Workouts() {
             </div>
 
             <div className="flex justify-between items-center mt-4 pt-4 border-t">
-              <Link 
+              <Link
                 to={`/workouts/${workout.id}`}
                 className="text-primary-600 hover:text-primary-700 text-sm font-medium"
               >
@@ -298,7 +299,7 @@ export default function Workouts() {
           </div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">No workouts found</h3>
           <p className="text-gray-600 mb-4">
-            {searchTerm || filterType !== 'all' 
+            {searchTerm || filterType !== 'all'
               ? 'Try adjusting your search or filter criteria.'
               : 'Start your fitness journey by logging your first workout!'
             }

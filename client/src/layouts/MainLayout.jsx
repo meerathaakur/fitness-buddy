@@ -5,7 +5,7 @@ import Sidebar from '../components/common/Sidebar'
 
 export default function MainLayout() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-100 mt-20">
       <Navbar />
       <div className="flex">
         <Sidebar />

@@ -70,8 +70,8 @@ export default function Sidebar() {
   }, [location.pathname])
 
   return (
-    <div className="fixed left-0 top-16 h-full w-64 bg-white shadow-sm border-r border-gray-200 z-40 mt-5">
-      <nav className="p-4 space-y-2">
+    <div className="fixed left-0 top-20 h-full w-64 bg-white shadow-sm border-r border-gray-200 z-40">
+      <nav className="p-4 space-y-2 mt-4">
         {navigation.map((item) => {
           const isActive = isItemActive(item)
           const isExpanded = expandedMenus.has(item.name)
