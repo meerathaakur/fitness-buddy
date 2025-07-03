@@ -3,6 +3,7 @@ import { MessageCircle, Calendar, MoreVertical, UserMinus, Star, MapPin, Clock, 
 import Card from '../../components/common/Card'
 import Button from '../../components/common/Button'
 import Avatar from '../../components/common/Avatar'
+import BuddyList from '../../components/buddies/BuddyList'
 import PageHeader from '../../components/common/PageHeader'
 import { toast } from '../../components/common/Toast'
 
@@ -114,8 +115,8 @@ export default function MyBuddies() {
     }
   ]
 
-  const handleMessage = (buddy) => {
-    toast.info(`Opening chat with ${buddy.name}`)
+  const handleMessage = (buddyId, buddyName) => {
+    toast.info(`Opening chat with ${buddyName}`)
   }
 
   const handleScheduleWorkout = (buddy) => {
@@ -152,7 +153,7 @@ export default function MyBuddies() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <PageHeader
+      <PageHeader 
         title="My Fitness Buddies"
         subtitle="Manage your workout partners and connections"
         backTo="/dashboard"
@@ -221,10 +222,11 @@ export default function MyBuddies() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === tab.id
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                activeTab === tab.id
                   ? 'border-primary-500 text-primary-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
+              }`}
             >
               {tab.label}
               <span className="ml-2 bg-gray-100 text-gray-900 py-0.5 px-2 rounded-full text-xs">
@@ -253,7 +255,7 @@ export default function MyBuddies() {
                   <p className="text-gray-700">{activity.activity}</p>
                 </div>
                 <div className="flex space-x-2">
-                  <Button size="sm" variant="outline" onClick={() => handleMessage(activity.buddy)}>
+                  <Button size="sm" variant="outline" onClick={() => handleMessage(activity.buddy.id, activity.buddy.name)}>
                     <MessageCircle className="w-4 h-4" />
                   </Button>
                 </div>
@@ -262,146 +264,16 @@ export default function MyBuddies() {
           </div>
         </Card>
       ) : (
-        /* Buddies Grid */
-        filteredBuddies.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredBuddies.map((buddy) => (
-              <Card key={buddy.id} className="p-6 hover:shadow-md transition-shadow">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center space-x-3">
-                    <div className="relative">
-                      <Avatar src={buddy.avatar} alt={buddy.name} size="lg" />
-                      {buddy.isOnline && (
-                        <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
-                      )}
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">{buddy.name}</h3>
-                      <div className="flex items-center text-sm text-gray-500">
-                        <MapPin className="w-3 h-3 mr-1" />
-                        {buddy.location}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="relative group">
-                    <button className="p-1 hover:bg-gray-100 rounded">
-                      <MoreVertical className="w-4 h-4 text-gray-400" />
-                    </button>
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
-                      <div className="py-1">
-                        <button
-                          onClick={() => handleRemoveBuddy(buddy.id)}
-                          className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-                        >
-                          <UserMinus className="w-4 h-4 mr-2" />
-                          Remove Buddy
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Recent Activity */}
-                <div className="mb-4 p-3 bg-blue-50 rounded-lg">
-                  <div className="flex items-center space-x-2 mb-1">
-                    <Activity className="w-4 h-4 text-blue-600" />
-                    <span className="text-sm font-medium text-blue-900">Recent Activity</span>
-                  </div>
-                  <p className="text-sm text-blue-800">{buddy.recentActivity}</p>
-                  <p className="text-xs text-blue-600 mt-1">{buddy.activityTime}</p>
-                </div>
-
-                <div className="space-y-3 mb-4">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">Fitness Level</span>
-                    <span className="font-medium text-gray-900 capitalize">{buddy.fitnessLevel}</span>
-                  </div>
-
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">Total Workouts</span>
-                    <span className="font-medium text-gray-900">{buddy.totalWorkouts}</span>
-                  </div>
-
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">Rating</span>
-                    <div className="flex items-center">
-                      <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                      <span className="font-medium text-gray-900 ml-1">{buddy.rating}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">Last Workout</span>
-                    <div className="flex items-center text-gray-900">
-                      <Clock className="w-3 h-3 mr-1" />
-                      {new Date(buddy.lastWorkout).toLocaleDateString()}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mb-4">
-                  <p className="text-sm text-gray-600 mb-2">Workout Preferences</p>
-                  <div className="flex flex-wrap gap-1">
-                    {buddy.workoutPreferences.map((pref, index) => (
-                      <span
-                        key={index}
-                        className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full capitalize"
-                      >
-                        {pref}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex space-x-2">
-                  <Button
-                    size="sm"
-                    onClick={() => handleMessage(buddy)}
-                    className="flex-1"
-                  >
-                    <MessageCircle className="w-4 h-4 mr-1" />
-                    Message
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleScheduleWorkout(buddy)}
-                    className="flex-1"
-                  >
-                    <Calendar className="w-4 h-4 mr-1" />
-                    Schedule
-                  </Button>
-                </div>
-
-                <div className="mt-3 pt-3 border-t border-gray-100">
-                  <p className="text-xs text-gray-500">
-                    Connected since {new Date(buddy.connectionDate).toLocaleDateString()}
-                  </p>
-                </div>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <Card className="p-12 text-center">
-            <div className="max-w-sm mx-auto">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="w-8 h-8 text-gray-400" />
-              </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                {activeTab === 'online' ? 'No buddies online' : 'No buddies yet'}
-              </h3>
-              <p className="text-gray-600 mb-4">
-                {activeTab === 'online' ? 'None of your buddies are currently online.' :
-                  'Start connecting with other fitness enthusiasts to build your buddy network.'}
-              </p>
-              {activeTab === 'all' && (
-                <Button>
-                  Find Buddies
-                </Button>
-              )}
-            </div>
-          </Card>
-        )
+        /* Buddies List */
+        <BuddyList
+          buddies={filteredBuddies}
+          onConnect={() => {}}
+          onMessage={handleMessage}
+          showConnectButton={false}
+          title=""
+          emptyMessage="No buddies found"
+          variant="detailed"
+        />
       )}
     </div>
   )
