@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
-const URI="mongodb://127.0.0.1:27017/fitness-buddy";
-// const URI = process.env.MONGO_URI 
+// const URI="mongodb://127.0.0.1:27017/fitness-buddy";
+const URI = process.env.MONGO_URI 
 
 const connectDB = async () => {
     try {
