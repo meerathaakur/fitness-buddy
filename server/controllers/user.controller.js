@@ -15,7 +15,7 @@ exports.getProfile = async (req, res) => {
 exports.updateProfile = async (req, res) => {
     try {
         const updates = req.body;
-        
+
         // Handle avatar upload
         if (req.file) {
             const result = await uploadToCloudinary(req.file.path);
@@ -36,9 +36,11 @@ exports.updateProfile = async (req, res) => {
 
 exports.updatePreferences = async (req, res) => {
     try {
+        const updatedPreferences = req.body;
+        console.log(updatedPreferences);
         const user = await User.findByIdAndUpdate(
             req.user._id,
-            { preferences: req.body },
+            { $set: { preferences: updatedPreferences.preferences } },
             { new: true }
         );
 
@@ -51,7 +53,7 @@ exports.updatePreferences = async (req, res) => {
 exports.updateLocation = async (req, res) => {
     try {
         const { latitude, longitude, address } = req.body;
-        
+
         const user = await User.findByIdAndUpdate(
             req.user._id,
             {

@@ -16,13 +16,14 @@ const SocketHandlers = require('./sockets/socketHandlers');
 
 // Import routes
 const authRoutes = require('./routes/auth.routes');
-// const userRoutes = require('./routes/user.routes');
-// const buddyRoutes = require('./routes/buddy.routes');
-// const workoutRoutes = require('./routes/workout.routes');
-// const messageRoutes = require('./routes/message.routes');
-// const goalRoutes = require('./routes/goal.routes');
-// const challengeRoutes = require('./routes/challenge.routes');
-// const analyticsRoutes = require('./routes/analytics.routes');
+const userRoutes = require('./routes/user.routes');
+const buddyRoutes = require('./routes/buddy.routes');
+const workoutRoutes = require('./routes/workout.routes');
+const messageRoutes = require('./routes/message.routes');
+const goalRoutes = require('./routes/goal.routes');
+const challengeRoutes = require('./routes/challenge.routes');
+const analyticsRoutes = require('./routes/analytics.routes');
+const notificationRoutes=require('./routes/notification.routes')
 
 const app = express();
 const httpServer = createServer(app);
@@ -66,35 +67,35 @@ app.use('/uploads', express.static('uploads'));
 
 // Routes
 app.use('/api/auth', authRoutes);
-// app.use('/api/users', userRoutes);
-// app.use('/api/buddies', buddyRoutes);
-// app.use('/api/workouts', workoutRoutes);
-// app.use('/api/messages', messageRoutes);
-// app.use('/api/goals', goalRoutes);
-// app.use('/api/challenges', challengeRoutes);
-// app.use('/api/analytics', analyticsRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/buddies', buddyRoutes);
+app.use('/api/workouts', workoutRoutes);
+app.use('/api/messages', messageRoutes);
+app.use('/api/goals', goalRoutes);
+app.use('/api/challenges', challengeRoutes);
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Health check route
 app.get('/health', (req, res) => {
-    res.json({ status: 'OK', timestamp: new Date().toISOString() });
+    res.json({ message: "This API is Working fine its health is good",status: 'OK', timestamp: new Date().toISOString() });
 });
 
 // Error handling middleware
 app.use(errorMiddleware);
 
 // Socket.IO connection handling
-// io.on('connection', (socket) => {
-//     console.log('A user connected');
+io.on('connection', (socket) => {
+    console.log('A user connected');
+    socket.on('joinRoom', (room) => {
+        socket.join(room);
+        console.log(`User joined room: ${room}`);
+    });
 
-//     socket.on('joinRoom', (room) => {
-//         socket.join(room);
-//         console.log(`User joined room: ${room}`);
-//     });
-
-//     socket.on('disconnect', () => {
-//         console.log('User disconnected');
-//     });
-// });
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
+    });
+});
 
 const PORT = process.env.PORT || 8080;
 httpServer.listen(PORT, () => {
