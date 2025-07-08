@@ -17,14 +17,14 @@ const generateOTP = () => {
 
 exports.register = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, location, fitnessLevel } = req.body;
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ error: 'User already exists' });
         }
 
-        const user = await User.create({ name, email, password });
+        const user = await User.create({ name, email, password, preferences: { location, fitnessLevel } });
 
         // Generate OTP for email verification
         const otp = generateOTP();
@@ -35,7 +35,7 @@ exports.register = async (req, res) => {
         });
 
         // Send verification email using EmailHelper
-        await EmailHelper.sendVerificationEmail({email, name, otp});
+        await EmailHelper.sendVerificationEmail({ email, name, otp });
 
         const token = generateToken(user._id);
 
@@ -46,7 +46,8 @@ exports.register = async (req, res) => {
                 id: user._id,
                 name: user.name,
                 email: user.email
-            }
+            },
+            preferences: user.preferences || {}
         });
     } catch (error) {
         res.status(500).json({ error: error.message });

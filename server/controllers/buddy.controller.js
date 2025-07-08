@@ -80,6 +80,7 @@ const calculateMatchScore = (user1, user2) => {
 exports.sendBuddyRequest = async (req, res) => {
     try {
         const requesterId = req.user._id;
+        // console.log(requesterId);
         const { recipientId } = req.body;
 
         if (requesterId.toString() === recipientId) {
