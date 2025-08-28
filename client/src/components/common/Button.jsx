@@ -14,7 +14,7 @@ export default function Button({
     primary: 'cursor-pointer bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
     secondary: 'cursor-pointer bg-black text-white hover:bg-gray-900 focus:ring-gray-800',
     outline:
-      'cursor-pointer border-2 border-gray-400 bg-transparent text-gray-800 hover:bg-blue-500 hover:text-white hover:border-blue-500 focus:ring-blue-500',
+      'cursor-pointer border-2 border-white bg-white text-gray-800 hover:bg-blue-500 hover:text-white hover:border-blue-500 focus:ring-blue-500',
     ghost:
       'cursor-pointer bg-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus:ring-gray-300',
     danger: 'cursor-pointer bg-red-600 text-white hover:bg-red-700 focus:ring-red-500'
