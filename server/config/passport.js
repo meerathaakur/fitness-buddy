@@ -8,7 +8,7 @@ module.exports = (passport) => {
     passport.use(new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: '/api/auth/google/callback',
+        callbackURL: '/auth/google/callback',
         scope:['profile','email']
     }, async (accessToken, refreshToken, profile, done) => {
         try {
@@ -35,7 +35,7 @@ module.exports = (passport) => {
     passport.use(new FacebookStrategy({
         clientID: process.env.FACEBOOK_APP_ID,
         clientSecret: process.env.FACEBOOK_APP_SECRET,
-        callbackURL: '/api/auth/facebook/callback',
+        callbackURL: '/auth/facebook/callback',
         profileFields: ['id', 'displayName', 'email', 'photos']
     }, async (accessToken, refreshToken, profile, done) => {
         try {

@@ -1,40 +1,78 @@
 import React, { createContext, useState, useEffect } from 'react'
 
+import {
+  getProfileAPI,
+  loginAPI,
+  registerAPI,
+  updateProfileAPI
+} from "../api/all.api.js"
+
 const AuthContext = createContext()
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // Mock user data
-  const mockUser = {
-    id: '1',
-    name: 'John Doe',
-    email: 'john@example.com',
-    avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400',
-    location: 'New York, NY',
-    fitnessLevel: 'intermediate',
-    workoutPreferences: ['strength', 'cardio'],
-    fitnessGoals: ['weight_loss', 'muscle_gain'],
-    joinedDate: '2024-01-15',
-    bio: 'Fitness enthusiast looking for workout partners!'
-  }
+
 
   useEffect(() => {
     // Simulate checking for existing session
     const token = localStorage.getItem('token')
+
     if (token) {
-      setUser(mockUser)
+      async function getUserProfile() {
+        try {
+          setLoading(true)
+          const response = await fetch(getProfileAPI, {
+            method: "GET",
+            headers: {
+              "Content-type": "application/json",
+              Authorization: `Bearer ${token}`
+            }
+          })
+
+          if (!response.ok) {
+            throw new Error(`Failed to fetch profile: ${response.status}`)
+          }
+
+          const data = await response.json()
+          setLoading(false)
+          setUser(data.user)
+        } catch (error) {
+          console.error("Profile fetch error", error)
+          localStorage.removeItem("token")
+          setUser(null)
+        } finally {
+          setLoading(false)
+        }
+
+      }
+      getUserProfile()
+    } else {
+      setLoading(false)
     }
     setLoading(false)
   }, [])
 
   const login = async (email, password) => {
     try {
-      // Mock login
-      localStorage.setItem('token', 'mock-token')
-      setUser(mockUser)
-      return { success: true }
+      setLoading(true)
+      const response = await fetch(loginAPI, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password })
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      const data = await response.json()
+      setLoading(false)
+      localStorage.setItem('token', data.token)
+      setUser(data.user)
+      return { message: data.message, success: response.ok }
     } catch (error) {
       return { success: false, error: error.message }
     }
@@ -42,11 +80,20 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      // Mock registration
-      const newUser = { ...mockUser, ...userData, id: Date.now().toString() }
-      localStorage.setItem('token', 'mock-token')
+      setLoading(true)
+      const response = await fetch(registerAPI, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ ...userData })
+      })
+      const data = await response.json()
+      setLoading(false)
+      const newUser = { ...data.user, ...userData }
+      localStorage.setItem('token', data.token)
       setUser(newUser)
-      return { success: true }
+      return { success: response.ok, message: data.message }
     } catch (error) {
       return { success: false, error: error.message }
     }
@@ -57,8 +104,29 @@ export const AuthProvider = ({ children }) => {
     setUser(null)
   }
 
-  const updateProfile = (userData) => {
-    setUser(prev => ({ ...prev, ...userData }))
+  const updateProfile = async (userData) => {
+    const token = localStorage.getItem("token")
+    try {
+      const response = await fetch(updateProfileAPI, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(...userData)
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to update profile:", response.status)
+      }
+
+      const data = await response.json()
+      setUser((prev) => ({ ...prev, ...data.user }))
+      return { success: response.ok, message: data.message }
+    } catch (error) {
+      return { success: false, error: error.message }
+    }
+
   }
 
   const value = {
