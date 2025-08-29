@@ -66,15 +66,15 @@ app.use(passport.initialize());
 app.use('/uploads', express.static('uploads'));
 
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/buddies', buddyRoutes);
-app.use('/api/workouts', workoutRoutes);
-app.use('/api/messages', messageRoutes);
-app.use('/api/goals', goalRoutes);
-app.use('/api/challenges', challengeRoutes);
-app.use('/api/analytics', analyticsRoutes);
-app.use('/api/notifications', notificationRoutes);
+app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
+app.use('/buddies', buddyRoutes);
+app.use('/workouts', workoutRoutes);
+app.use('/messages', messageRoutes);
+app.use('/goals', goalRoutes);
+app.use('/challenges', challengeRoutes);
+app.use('/analytics', analyticsRoutes);
+app.use('/notifications', notificationRoutes);
 
 // Health check route
 app.get('/health', (req, res) => {
