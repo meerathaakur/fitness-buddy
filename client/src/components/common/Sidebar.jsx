@@ -1,25 +1,29 @@
 import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { 
-  LayoutDashboard, 
-  Dumbbell, 
-  Users, 
-  MessageCircle, 
-  Target, 
+import {
+  LayoutDashboard,
+  Dumbbell,
+  Users,
+  MessageCircle,
+  Target,
   Trophy,
   BookOpen,
   User,
   ChevronDown,
   ChevronRight,
   UserPlus,
-  UserCheck
+  UserCheck,
+  X,
+  Menu,
+  ArrowLeftToLine
 } from 'lucide-react'
+import { useEffect } from 'react'
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Workouts', href: '/workouts', icon: Dumbbell },
-  { 
-    name: 'Buddies', 
+  {
+    name: 'Buddies',
     icon: Users,
     submenu: [
       { name: 'Find Buddies', href: '/buddies', icon: UserPlus },
@@ -36,6 +40,7 @@ const navigation = [
 export default function Sidebar() {
   const location = useLocation()
   const [expandedMenus, setExpandedMenus] = useState(new Set())
+  const [isOpen, setIsOpen] = useState(true)
 
   const toggleSubmenu = (itemName) => {
     setExpandedMenus(prev => {
@@ -61,7 +66,7 @@ export default function Sidebar() {
   }
 
   // Auto-expand submenu if any of its items are active
-  React.useEffect(() => {
+  useEffect(() => {
     navigation.forEach(item => {
       if (item.submenu && isSubmenuActive(item.submenu)) {
         setExpandedMenus(prev => new Set([...prev, item.name]))
@@ -70,8 +75,15 @@ export default function Sidebar() {
   }, [location.pathname])
 
   return (
-    <div className="fixed left-0 top-20 h-full w-64 bg-white shadow-sm border-r border-gray-200 z-40">
-      <nav className="p-4 space-y-2 mt-4">
+    <div className={`fixed left-0 top-20 h-full bg-white shadow-sm border-r border-gray-200 z-40 ${isOpen ? "w-64" : "w-10"}`}>
+      {/* Toggle Button */}
+      <button 
+        onClick={() => setIsOpen(!isOpen)} 
+        className="absolute right-0 top-0 bg-primary-500 text-white rounded-sm p-1 shadow"
+      >
+        {isOpen ? <ArrowLeftToLine className="w-5 h-5 text-gray-400" /> : <Menu className="w-5 h-5 text-gray-400" />}
+      </button>
+      <nav className="p-4 space-y-2 mt-8">
         {navigation.map((item) => {
           const isActive = isItemActive(item)
           const isExpanded = expandedMenus.has(item.name)
@@ -89,18 +101,20 @@ export default function Sidebar() {
                   }`}
                 >
                   <div className="flex items-center">
-                    <item.icon className="w-5 h-5 mr-3" />
-                    {item.name}
+                    {isOpen&&<item.icon className="w-5 h-5 mr-3" />}
+                    {isOpen && item.name}
                   </div>
-                  {isExpanded ? (
-                    <ChevronDown className="w-4 h-4" />
-                  ) : (
-                    <ChevronRight className="w-4 h-4" />
+                  {isOpen && (
+                    isExpanded ? (
+                      <ChevronDown className="w-4 h-4" />
+                    ) : (
+                      <ChevronRight className="w-4 h-4" />
+                    )
                   )}
                 </button>
                 
                 {/* Submenu items */}
-                {isExpanded && (
+                {isOpen && isExpanded && (
                   <div className="ml-6 mt-2 space-y-1">
                     {item.submenu.map((subItem) => {
                       const isSubActive = location.pathname === subItem.href
@@ -125,7 +139,7 @@ export default function Sidebar() {
             )
           }
 
-          // Regular menu item without submenu
+          // Regular menu item
           return (
             <Link
               key={item.name}
@@ -137,7 +151,7 @@ export default function Sidebar() {
               }`}
             >
               <item.icon className="w-5 h-5 mr-3" />
-              {item.name}
+              {isOpen && item.name}
             </Link>
           )
         })}
