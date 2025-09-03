@@ -48,7 +48,6 @@ export const AuthProvider = ({ children }) => {
           // console.log(data)
         } catch (error) {
           console.error("Profile fetch error", error)
-          localStorage.removeItem("token")
           sessionStorage.removeItem("token")
           setUser(null)
         } finally {
@@ -139,22 +138,6 @@ export const AuthProvider = ({ children }) => {
     }
 
   }
-
-  // const verifyEmail=async(email,otp)=>{
-  //   try {
-  //     const response=await fetch(verifyEmailAPI,{
-  //       method:"POST",
-  //       headers:{
-  //         "Content-Type":"application/json"
-  //       },
-  //       body:JSON.stringify({email,otp})
-  //     })
-  //     const data=await response.json()
-  //     return {data}
-  //   } catch (error) {
-  //     return { success: false, error: error.message }
-  //   }
-  // }
 
   const value = {
     user,

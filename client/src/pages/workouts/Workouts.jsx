@@ -1,15 +1,36 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Plus, Calendar, Clock, Flame, TrendingUp, Filter, Search } from 'lucide-react'
 import Card from '../../components/common/Card'
 import Button from '../../components/common/Button'
 import PageHeader from '../../components/common/PageHeader'
 import { useAuth } from '../../hooks/useAuth'
+import { useWorkout } from '../../hooks/useWorkout'
+import { getWeeklyAnalyticsAPI } from '../../api/all.api'
 
 export default function Workouts() {
   const { user } = useAuth()
+  const {addWorkout}=useWorkout()
+  console.log(addWorkout())
+  // console.log(user)
   const [searchTerm, setSearchTerm] = useState('')
   const [filterType, setFilterType] = useState('all')
+
+    async function weeklyWorkoutProgress(validation) {
+      const response = await fetch(getWeeklyAnalyticsAPI, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${validation}`
+        }
+      })
+      if (!response.ok) {
+        throw new Error(`Failed to fetch workout analytics: ${response.status}`)
+      }
+      const data = await response.json()
+      console.log(data)
+    }
+
 
   // Mock workout data
   const workouts = [
@@ -69,6 +90,13 @@ export default function Workouts() {
     }
   ]
 
+  useEffect(()=>{
+    const token = localStorage.getItem("token")
+    const session = sessionStorage.getItem("token")
+    const validation = token ? token : session
+    weeklyWorkoutProgress(validation)
+  },[])
+
   const workoutTypes = [
     { value: 'all', label: 'All Workouts' },
     { value: 'strength', label: 'Strength' },
@@ -120,7 +148,7 @@ export default function Workouts() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="p-6">
+        {/* <Card className="p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Total Workouts</p>
@@ -130,9 +158,9 @@ export default function Workouts() {
               <TrendingUp className="w-6 h-6 text-blue-600" />
             </div>
           </div>
-        </Card>
+        </Card> */}
 
-        <Card className="p-6">
+        {/* <Card className="p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">This Week</p>
@@ -142,9 +170,9 @@ export default function Workouts() {
               <Calendar className="w-6 h-6 text-green-600" />
             </div>
           </div>
-        </Card>
+        </Card> */}
 
-        <Card className="p-6">
+        {/* <Card className="p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Total Time</p>
@@ -154,9 +182,9 @@ export default function Workouts() {
               <Clock className="w-6 h-6 text-purple-600" />
             </div>
           </div>
-        </Card>
+        </Card> */}
 
-        <Card className="p-6">
+        {/* <Card className="p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Calories Burned</p>
@@ -166,7 +194,7 @@ export default function Workouts() {
               <Flame className="w-6 h-6 text-red-600" />
             </div>
           </div>
-        </Card>
+        </Card> */}
       </div>
 
       {/* Filters and Search */}
@@ -202,7 +230,7 @@ export default function Workouts() {
       </Card>
 
       {/* Workouts List */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {filteredWorkouts.map((workout) => (
           <Card key={workout.id} className="p-6 hover:shadow-lg transition-shadow">
             <div className="flex items-start justify-between mb-4">
@@ -290,9 +318,9 @@ export default function Workouts() {
             </div>
           </Card>
         ))}
-      </div>
+      </div> */}
 
-      {filteredWorkouts.length === 0 && (
+      {/* {filteredWorkouts.length === 0 && (
         <Card className="p-12 text-center">
           <div className="text-gray-400 mb-4">
             <TrendingUp className="w-12 h-12 mx-auto" />
@@ -309,7 +337,7 @@ export default function Workouts() {
             Log Your First Workout
           </Button>
         </Card>
-      )}
+      )} */}
     </div>
   )
 }
