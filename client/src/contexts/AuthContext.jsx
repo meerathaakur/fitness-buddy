@@ -4,7 +4,13 @@ import {
   getProfileAPI,
   loginAPI,
   registerAPI,
-  updateProfileAPI
+  updateProfileAPI,
+  // verifyEmailAPI,
+  // verifyEmailAPI,
+  // forgotPasswordAPI,
+  // resetPasswordAPI,
+  // updatePreferencesAPI,
+  // updateLocationAPI
 } from "../api/all.api.js"
 
 const AuthContext = createContext()
@@ -18,15 +24,15 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // Simulate checking for existing session
     const token = localStorage.getItem('token')
-
-    if (token) {
+    const session=sessionStorage.getItem("token")
+    if (token || session) {
       async function getUserProfile() {
         try {
           setLoading(true)
           const response = await fetch(getProfileAPI, {
             method: "GET",
             headers: {
-              "Content-type": "application/json",
+              "Content-Type": "application/json",
               Authorization: `Bearer ${token}`
             }
           })
@@ -36,25 +42,25 @@ export const AuthProvider = ({ children }) => {
           }
 
           const data = await response.json()
+          setUser(data)
           setLoading(false)
-          setUser(data.user)
+          
+          // console.log(data)
         } catch (error) {
           console.error("Profile fetch error", error)
           localStorage.removeItem("token")
+          sessionStorage.removeItem("token")
           setUser(null)
         } finally {
           setLoading(false)
         }
-
       }
       getUserProfile()
-    } else {
-      setLoading(false)
-    }
+    } 
     setLoading(false)
-  }, [])
+  },[])
 
-  const login = async (email, password) => {
+  const login = async (email, password, rememberMe = false) => {
     try {
       setLoading(true)
       const response = await fetch(loginAPI, {
@@ -69,9 +75,14 @@ export const AuthProvider = ({ children }) => {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
       const data = await response.json()
-      setLoading(false)
       localStorage.setItem('token', data.token)
-      setUser(data.user)
+
+      setLoading(false)
+      if (rememberMe) {
+        localStorage.setItem('token', data.token)
+      } else {
+        sessionStorage.setItem("token", data.token)
+      }
       return { message: data.message, success: response.ok }
     } catch (error) {
       return { success: false, error: error.message }
@@ -86,13 +97,13 @@ export const AuthProvider = ({ children }) => {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ ...userData })
+        body: JSON.stringify(userData )
       })
       const data = await response.json()
       setLoading(false)
-      const newUser = { ...data.user, ...userData }
+      // const newUser = { ...data.user, ...userData }
       localStorage.setItem('token', data.token)
-      setUser(newUser)
+      // setUser(newUser)
       return { success: response.ok, message: data.message }
     } catch (error) {
       return { success: false, error: error.message }
@@ -113,7 +124,7 @@ export const AuthProvider = ({ children }) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify(...userData)
+        body: JSON.stringify(userData)
       })
 
       if (!response.ok) {
@@ -128,6 +139,22 @@ export const AuthProvider = ({ children }) => {
     }
 
   }
+
+  // const verifyEmail=async(email,otp)=>{
+  //   try {
+  //     const response=await fetch(verifyEmailAPI,{
+  //       method:"POST",
+  //       headers:{
+  //         "Content-Type":"application/json"
+  //       },
+  //       body:JSON.stringify({email,otp})
+  //     })
+  //     const data=await response.json()
+  //     return {data}
+  //   } catch (error) {
+  //     return { success: false, error: error.message }
+  //   }
+  // }
 
   const value = {
     user,
