@@ -16,6 +16,7 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const { login } = useAuth()
+  
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
@@ -23,10 +24,11 @@ export default function LoginForm() {
     setLoading(true)
 
     try {
-      const result = await login(formData.email, formData.password)
+      const result = await login(formData.email, formData.password,formData.rememberMe)
+      // console.log(result)
       if (result.success) {
         toast.success('Welcome back!')
-        navigate('/dashboard')
+        navigate('/dashboard',{replace:true})
       } else {
         toast.error(result.error || 'Login failed')
       }

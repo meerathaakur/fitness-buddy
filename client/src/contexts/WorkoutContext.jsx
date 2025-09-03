@@ -1,36 +1,20 @@
-import React, { createContext, useState } from 'react'
+import React, { createContext, useEffect, useState } from 'react'
+import { createWorkoutAPI } from '../api/all.api'
 
 const WorkoutContext = createContext()
 
 export const WorkoutProvider = ({ children }) => {
-  const [workouts, setWorkouts] = useState([
-    {
-      id: '1',
-      title: 'Morning Strength Training',
-      type: 'strength',
-      duration: 45,
-      calories: 320,
-      date: '2024-12-08',
-      completed: true,
-      exercises: [
-        { id: '1', name: 'Squats', sets: 3, reps: 12, weight: 135 },
-        { id: '2', name: 'Bench Press', sets: 3, reps: 10, weight: 155 },
-        { id: '3', name: 'Deadlifts', sets: 3, reps: 8, weight: 185 }
-      ]
-    },
-    {
-      id: '2',
-      title: 'Evening Cardio',
-      type: 'cardio',
-      duration: 30,
-      calories: 280,
-      date: '2024-12-07',
-      completed: true,
-      exercises: [
-        { id: '1', name: 'Treadmill Run', duration: 30, distance: 3.2 }
-      ]
-    }
-  ])
+  const [workouts, setWorkouts] = useState([])
+
+  // useEffect(()=>{
+  //   const token = localStorage.getItem("token")
+  //   const session = sessionStorage.getItem("token")
+  //   const validation = token ? token : session
+  //   if(validation){
+  //     setWorkouts()
+  //   }
+
+  // },[])
 
   const [goals, setGoals] = useState([
     {
@@ -79,57 +63,91 @@ export const WorkoutProvider = ({ children }) => {
       status: 'pending'
     }
   ])
+  // workoutData -->{title, images, duration, type, caloriesBurned, intensity, location, buddies, images, isPublic, exercises, workoutDate}
+  const addWorkout = async (workoutData) => {
+    try {
+      const token = localStorage.getItem("token")
+      const session = sessionStorage.getItem("token")
+      const validation = token ? token : session
+      const response = await fetch(createWorkoutAPI, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${validation}`
+        },
+        body: JSON.stringify(workoutData)
+      })
+      if (!response.ok) {
+        return { success: response.ok }
+      }
 
-  const addWorkout = (workout) => {
-    const newWorkout = {
-      ...workout,
-      id: Date.now().toString(),
-      date: new Date().toISOString().split('T')[0]
+      const data = await response.json()
+      console.log(data)
+      setWorkouts()
+      return { success: response.ok, data: data }
+    } catch (error) {
+      return { success: false, error: error.message }
     }
-    setWorkouts(prev => [newWorkout, ...prev])
   }
 
-  const updateWorkout = (id, updates) => {
-    setWorkouts(prev => prev.map(w => w.id === id ? { ...w, ...updates } : w))
-  }
+  // const getUserWorkouts = () => {
 
-  const deleteWorkout = (id) => {
-    setWorkouts(prev => prev.filter(w => w.id !== id))
-  }
+  // }
 
-  const addGoal = (goal) => {
-    const newGoal = {
-      ...goal,
-      id: Date.now().toString()
-    }
-    setGoals(prev => [newGoal, ...prev])
-  }
+  // const getWeeklyAnalytics=()=>{
 
-  const updateGoal = (id, updates) => {
-    setGoals(prev => prev.map(g => g.id === id ? { ...g, ...updates } : g))
-  }
+  // }
 
-  const deleteGoal = (id) => {
-    setGoals(prev => prev.filter(g => g.id !== id))
-  }
+  // const getMonthlyAnalytics=()=>{
 
-  const connectBuddy = (buddyId) => {
-    setBuddies(prev => prev.map(b => 
-      b.id === buddyId ? { ...b, status: 'connected' } : b
-    ))
-  }
+  // }
+
+  // const getWorkoutStats=()=>{
+
+  // }
+
+  // const getWorkoutById=()=>{
+
+  // }
+
+  // updates-->{title, type,duration,}
+  // const updateWorkout = (id, updates) => {
+
+  // }
+
+  // const deleteWorkout = (id) => {
+
+  // }
+
+
+  // Buddies
+  // const addGoal = (goal) => {
+
+  // }
+
+  // const updateGoal = (id, updates) => {
+
+  // }
+
+  // const deleteGoal = (id) => {
+
+  // }
+
+  // const connectBuddy = (buddyId) => {
+
+  // }
 
   const value = {
     workouts,
     goals,
     buddies,
     addWorkout,
-    updateWorkout,
-    deleteWorkout,
-    addGoal,
-    updateGoal,
-    deleteGoal,
-    connectBuddy
+    // updateWorkout,
+    // deleteWorkout,
+    // addGoal,
+    // updateGoal,
+    // deleteGoal,
+    // connectBuddy,
   }
 
   return (

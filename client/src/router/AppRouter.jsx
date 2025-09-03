@@ -1,14 +1,15 @@
 import React from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, Router } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import MainLayout from '../layouts/MainLayout'
 import AuthLayout from '../layouts/AuthLayout'
 import OnboardingLayout from '../layouts/OnboardingLayout'
 
-// Pages
+// // Pages
 import Home from '../pages/Home'
 import Login from '../pages/auth/Login'
 import Register from '../pages/auth/Register'
+import AuthCallback from '../components/auth/AuthCallback'
 import Dashboard from '../pages/dashboard/Dashboard'
 import Profile from '../pages/profile/Profile'
 import EditProfile from '../pages/profile/EditProfile'
@@ -29,26 +30,28 @@ import NotFound from '../pages/NotFound'
 
 const ProtectedRoute = ({ children }) => {
     const { user, loading } = useAuth()
-
+    const token = localStorage.getItem("token")
+    // console.log(loading)
     if (loading) {
         return <div className="flex items-center justify-center min-h-screen">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-600"></div>
         </div>
     }
 
-    return user ? children : <Navigate to="/auth/login" />
+    return (user || token) ? children : <Navigate to="/auth/login" />
 }
 
 const PublicRoute = ({ children }) => {
     const { user, loading } = useAuth()
-
+    const token = localStorage.getItem("token")
+    // console.log(loading)
     if (loading) {
         return <div className="flex items-center justify-center min-h-screen">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-600"></div>
         </div>
     }
 
-    return !user ? children : <Navigate to="/dashboard" />
+    return !(user || token) ? children : <Navigate to="/dashboard" />
 }
 
 export default function AppRouter() {
