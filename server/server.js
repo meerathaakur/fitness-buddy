@@ -23,10 +23,16 @@ const messageRoutes = require('./routes/message.routes');
 const goalRoutes = require('./routes/goal.routes');
 const challengeRoutes = require('./routes/challenge.routes');
 const analyticsRoutes = require('./routes/analytics.routes');
-const notificationRoutes=require('./routes/notification.routes')
+const notificationRoutes = require('./routes/notification.routes')
 
 const app = express();
 const httpServer = createServer(app);
+
+// allowed origins for CORS
+const allowedOrigins = [
+    "http://localhost:3000",
+    "https://fitness-buddy-five.vercel.app"
+];
 
 // Configure Socket.IO
 const io = new Server(httpServer, {
@@ -54,7 +60,15 @@ Scheduler.init();
 // Middlewares
 app.use(helmet());
 app.use(cors({
-    origin: process.env.CLIENT_URL || "*",
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE"], // 👈 explicitly allow only these
+    allowedHeaders: ["Content-Type", "Authorization"],  // 👈 useful if sending tokens
     credentials: true,
 }));
 app.use(express.json());
@@ -78,7 +92,7 @@ app.use('/notifications', notificationRoutes);
 
 // Health check route
 app.get('/health', (req, res) => {
-    res.json({ message: "This API is Working fine its health is good",status: 'OK', timestamp: new Date().toISOString() });
+    res.json({ message: "This API is Working fine its health is good", status: 'OK', timestamp: new Date().toISOString() });
 });
 
 // Error handling middleware
