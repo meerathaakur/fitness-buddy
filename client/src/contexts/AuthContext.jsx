@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password, rememberMe = false) => {
     try {
-      setLoading(true)
+      // setLoading(true)
       const response = await fetch(loginAPI, {
         method: "POST",
         headers: {
@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json()
       localStorage.setItem('token', data.token)
 
-      setLoading(false)
+      // setLoading(false)
       if (rememberMe) {
         localStorage.setItem('token', data.token)
       } else {
@@ -90,7 +90,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      setLoading(true)
+      // setLoading(true)
       const response = await fetch(registerAPI, {
         method: "POST",
         headers: {
@@ -99,7 +99,7 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify(userData )
       })
       const data = await response.json()
-      setLoading(false)
+      // setLoading(false)
       // const newUser = { ...data.user, ...userData }
       localStorage.setItem('token', data.token)
       // setUser(newUser)

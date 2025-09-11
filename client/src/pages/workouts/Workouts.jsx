@@ -12,25 +12,26 @@ export default function Workouts() {
   // const { user } = useAuth()
   // const {addWorkout}=useWorkout()
   const { getUserWorkouts } = useWorkout()
+  // getUserWorkouts()
   
   // console.log(user)
   const [searchTerm, setSearchTerm] = useState('')
   const [filterType, setFilterType] = useState('all')
 
-  async function weeklyWorkoutProgress(validation) {
-    const response = await fetch(getWeeklyAnalyticsAPI, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${validation}`
-      }
-    })
-    if (!response.ok) {
-      throw new Error(`Failed to fetch workout analytics: ${response.status}`)
-    }
-    const data = await response.json()
-    // console.log(data)
-  }
+  // async function weeklyWorkoutProgress(validation) {
+  //   const response = await fetch(getWeeklyAnalyticsAPI, {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${validation}`
+  //     }
+  //   })
+  //   if (!response.ok) {
+  //     throw new Error(`Failed to fetch workout analytics: ${response.status}`)
+  //   }
+  //   const data = await response.json()
+  //   // console.log(data)
+  // }
 
 
   // Mock workout data
@@ -95,7 +96,15 @@ export default function Workouts() {
     const token = localStorage.getItem("token")
     const session = sessionStorage.getItem("token")
     const validation = token ? token : session
-    weeklyWorkoutProgress(validation)
+    const getWorkout=async()=>{
+      const res=await getUserWorkouts()
+      if(res.success){
+        // setWorkouts(res.data)
+        console.log(res)
+      }
+    }
+    getWorkout()
+    // weeklyWorkoutProgress(validation)
     // console.log(getUserWorkouts())
   }, [])
 

@@ -17,17 +17,18 @@ import {
 const WorkoutContext = createContext()
 
 export const WorkoutProvider = ({ children }) => {
-  const [workouts, setWorkouts] = useState([])
+  // const [loading, setLoading] = useState(false)
+  // const [workouts, setWorkouts] = useState(null)
+  // const [error, setError] = useState(null)
 
-  // useEffect(()=>{
-  //   const token = localStorage.getItem("token")
-  //   const session = sessionStorage.getItem("token")
-  //   const validation = token ? token : session
-  //   if(validation){
-  //     setWorkouts()
-  //   }
+  useEffect(() => {
+    // const token = localStorage.getItem("token")
+    // const session = sessionStorage.getItem("token")
+    // const validation = token ? token : session
 
-  // },[])
+
+
+  }, [])
 
   const [goals, setGoals] = useState([
     {
@@ -96,7 +97,6 @@ export const WorkoutProvider = ({ children }) => {
 
       const data = await response.json()
       console.log(data)
-      setWorkouts()
       return { success: response.ok, data: data }
     } catch (error) {
       return { success: false, error: error.message }
@@ -119,9 +119,9 @@ export const WorkoutProvider = ({ children }) => {
       if (!response.ok) {
         return { success: response.ok }
       }
-
       const data = await response.json()
       console.log(data)
+      return { success: response.ok, data: data, pagination: response.pagination }
     } catch (error) {
       return { success: false, error: error.message }
 
@@ -147,6 +147,7 @@ export const WorkoutProvider = ({ children }) => {
 
       const data = await response.json()
       console.log(data)
+      return { success: response.ok, data: data }
     } catch (error) {
       return { success: false, error: error.message }
 
@@ -295,7 +296,7 @@ export const WorkoutProvider = ({ children }) => {
   // }
 
   const value = {
-    workouts,
+    // workouts,
     goals,
     buddies,
     addWorkout,
@@ -306,7 +307,7 @@ export const WorkoutProvider = ({ children }) => {
     getWorkoutById,
     updateWorkout,
     deleteWorkout
-    
+
   }
 
   return (
