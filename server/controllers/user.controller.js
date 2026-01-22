@@ -6,13 +6,13 @@ const { uploadToCloudinary } = require('../utils/cloudinary');
 exports.getProfile = async (req, res) => {
     try {
         const user = await User.findById(req.user._id).populate('buddies', 'name avatar');
-        res.json(user);
+        res.status(200).json({success:true,user});
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({success:false, error: error.message });
     }
 };
 
-exports.updateProfile = async (req, res) => {
+exports.updateProfile = async (req, res) => { // make changes can cause error user can't update directly update profile
     try {
         const updates = req.body;
 
@@ -28,9 +28,9 @@ exports.updateProfile = async (req, res) => {
             { new: true, runValidators: true }
         );
 
-        res.json(user);
+        res.status(200).json({success:true,user});
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({success:false, error: error.message });
     }
 };
 
@@ -44,9 +44,9 @@ exports.updatePreferences = async (req, res) => {
             { new: true }
         );
 
-        res.json(user.preferences);
+        res.status(200).json({success:true,preferences:user.preferences});
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({success:false, error: error.message });
     }
 };
 
@@ -66,8 +66,8 @@ exports.updateLocation = async (req, res) => {
             { new: true }
         );
 
-        res.json({ message: 'Location updated successfully', location: user.location });
+        res.status(200).json({success:true, message: 'Location updated successfully', location: user.location });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({success:false, error: error.message });
     }
 };

@@ -21,6 +21,12 @@ const userSchema = new mongoose.Schema({
             return !this.socialLogin;
         }
     },
+    role:{
+        type:String,
+        default:'user',
+        enum:['user','admin','super_admin'],
+        require:true,
+    },
     avatar: {
         type: String,
         default: null
@@ -136,3 +142,118 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
 };
 
 module.exports = mongoose.model('User', userSchema);
+
+// // we will upgrade on it later
+
+// // models/User.js
+// const mongoose = require('mongoose');
+// const bcrypt = require('bcryptjs');
+
+// const userSchema = new mongoose.Schema({
+//   name: {
+//     type: String,
+//     required: true,
+//     trim: true
+//   },
+
+//   email: {
+//     type: String,
+//     required: true,
+//     unique: true,
+//     lowercase: true
+//   },
+
+//   password: {
+//     type: String,
+//     required: function () {
+//       return !this.socialLogin;
+//     }
+//   },
+
+//   role: {
+//     type: String,
+//     enum: ['user', 'admin', 'super_admin'],
+//     default: 'user',
+//     required: true
+//   },
+
+//   avatar: {
+//     type: String,
+//     default: null
+//   },
+
+//   location: {
+//     type: {
+//       type: String,
+//       enum: ['Point'],
+//       default: 'Point'
+//     },
+//     coordinates: {
+//       type: [Number],
+//       default: [0, 0]
+//     },
+//     address: String
+//   },
+
+//   preference: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: 'Preference'
+//   },
+
+//   socialLogin: {
+//     provider: {
+//       type: String,
+//       enum: ['google', 'facebook']
+//     },
+//     providerId: String
+//   },
+
+//   buddies: [{
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: 'User'
+//   }],
+
+//   buddyRequests: {
+//     sent: [{
+//       user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+//       sentAt: { type: Date, default: Date.now }
+//     }],
+//     received: [{
+//       user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+//       receivedAt: { type: Date, default: Date.now }
+//     }]
+//   },
+
+//   stats: {
+//     totalWorkouts: { type: Number, default: 0 },
+//     totalCaloriesBurned: { type: Number, default: 0 },
+//     totalWorkoutTime: { type: Number, default: 0 },
+//     streakDays: { type: Number, default: 0 },
+//     lastWorkoutDate: Date
+//   },
+
+//   isActive: {
+//     type: Boolean,
+//     default: true
+//   },
+
+//   lastSeen: {
+//     type: Date,
+//     default: Date.now
+//   }
+
+// }, { timestamps: true });
+
+// userSchema.index({ location: '2dsphere' });
+
+// userSchema.pre('save', async function (next) {
+//   if (!this.isModified('password') || !this.password) return next();
+//   this.password = await bcrypt.hash(this.password, 12);
+//   next();
+// });
+
+// userSchema.methods.comparePassword = function (candidatePassword) {
+//   return bcrypt.compare(candidatePassword, this.password);
+// };
+
+// module.exports = mongoose.model('User', userSchema);
