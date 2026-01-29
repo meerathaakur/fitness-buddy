@@ -4,36 +4,10 @@ import { Plus, Calendar, Clock, Flame, TrendingUp, Filter, Search } from 'lucide
 import Card from '../../components/common/Card'
 import Button from '../../components/common/Button'
 import PageHeader from '../../components/common/PageHeader'
-// import { useAuth } from '../../hooks/useAuth'
+import { useAuth } from '../../hooks/useAuth'
 import { useWorkout } from '../../hooks/useWorkout'
-import { getWeeklyAnalyticsAPI } from '../../api/all.api'
 
-export default function Workouts() {
-  // const { user } = useAuth()
-  // const {addWorkout}=useWorkout()
-  const { getUserWorkouts } = useWorkout()
-  
-  // console.log(user)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [filterType, setFilterType] = useState('all')
-
-  async function weeklyWorkoutProgress(validation) {
-    const response = await fetch(getWeeklyAnalyticsAPI, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${validation}`
-      }
-    })
-    if (!response.ok) {
-      throw new Error(`Failed to fetch workout analytics: ${response.status}`)
-    }
-    const data = await response.json()
-    // console.log(data)
-  }
-
-
-  // Mock workout data
+// Mock workout data
   const workouts = [
     {
       id: '1',
@@ -91,13 +65,22 @@ export default function Workouts() {
     }
   ]
 
+export default function Workouts() {
+  const { getUserWorkouts, addWorkout, getWeeklyAnalytics } = useWorkout()
+  const {token}=useAuth()
+  // console.log(user)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [filterType, setFilterType] = useState('all')
+
+  async function weeklyWorkoutProgress() {
+    const response = await getWeeklyAnalytics()
+    console.log("analytics Data:::",response)
+  }
+
   useEffect(() => {
-    const token = localStorage.getItem("token")
-    const session = sessionStorage.getItem("token")
-    const validation = token ? token : session
-    weeklyWorkoutProgress(validation)
-    // console.log(getUserWorkouts())
-  }, [])
+    
+    weeklyWorkoutProgress()
+  }, [token])
 
   const workoutTypes = [
     { value: 'all', label: 'All Workouts' },

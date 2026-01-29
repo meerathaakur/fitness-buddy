@@ -49,7 +49,7 @@ exports.findBuddies = async (req, res) => {
 
         buddiesWithScores.sort((a, b) => b.matchScore - a.matchScore);
 
-        res.json(buddiesWithScores);
+        res.status(200).json({ success: true, data: buddiesWithScores });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -57,23 +57,23 @@ exports.findBuddies = async (req, res) => {
 
 const calculateMatchScore = (user1, user2) => {
     let score = 0;
-    
+
     // Common workout types
     const commonWorkouts = user1.preferences.workoutTypes.filter(
         type => user2.preferences.workoutTypes.includes(type)
     );
     score += commonWorkouts.length * 20;
-    
+
     // Same fitness level
     if (user1.preferences.fitnessLevel === user2.preferences.fitnessLevel) {
         score += 30;
     }
-    
+
     // Distance factor (closer = higher score)
     const maxDistance = 50000; // 50km
     const distanceFactor = Math.max(0, (maxDistance - user2.distance) / maxDistance);
     score += distanceFactor * 30;
-    
+
     return Math.round(score);
 };
 
@@ -84,7 +84,7 @@ exports.sendBuddyRequest = async (req, res) => {
         const { recipientId } = req.body;
 
         if (requesterId.toString() === recipientId) {
-            return res.status(400).json({ error: 'Cannot send request to yourself' });
+            return res.status(400).json({success:false, error: 'Cannot send request to yourself' });
         }
 
         const existingRequest = await Buddy.findOne({
@@ -95,7 +95,7 @@ exports.sendBuddyRequest = async (req, res) => {
         });
 
         if (existingRequest) {
-            return res.status(400).json({ error: 'Request already exists' });
+            return res.status(400).json({success:false, error: 'Request already exists' });
         }
 
         const buddy = await Buddy.create({
@@ -111,7 +111,7 @@ exports.sendBuddyRequest = async (req, res) => {
             data: { userId: requesterId }
         });
 
-        res.status(201).json({ message: 'Buddy request sent', buddy });
+        res.status(201).json({success:true, message: 'Buddy request sent', data:buddy });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -124,11 +124,11 @@ exports.respondToBuddyRequest = async (req, res) => {
 
         const buddy = await Buddy.findById(requestId);
         if (!buddy) {
-            return res.status(404).json({ error: 'Request not found' });
+            return res.status(404).json({success:false, error: 'Request not found' });
         }
 
         if (buddy.recipient.toString() !== req.user._id.toString()) {
-            return res.status(403).json({ error: 'Unauthorized' });
+            return res.status(403).json({success:false, error: 'Unauthorized' });
         }
 
         buddy.status = action === 'accept' ? 'accepted' : 'rejected';
@@ -152,7 +152,7 @@ exports.respondToBuddyRequest = async (req, res) => {
             });
         }
 
-        res.json({ message: `Request ${action}ed successfully` });
+        res.json({success:true, message: `Request ${action}ed successfully` });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -161,7 +161,7 @@ exports.respondToBuddyRequest = async (req, res) => {
 exports.getBuddies = async (req, res) => {
     try {
         const user = await User.findById(req.user._id).populate('buddies', 'name email avatar preferences stats lastSeen');
-        res.json(user.buddies);
+        res.status(200).json({success:true, data:user.buddies});
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

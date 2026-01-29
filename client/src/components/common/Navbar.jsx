@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Bell, Search, User, Settings, LogOut, MessageCircle, Users, Trophy, Calendar } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import Avatar from './Avatar'
@@ -8,6 +8,7 @@ import webLogo from '/fitness.png'
 export default function Navbar() {
   const { user, logout } = useAuth()
   const [showNotifications, setShowNotifications] = useState(false)
+  const navigate=useNavigate()
 
   // Mock notifications data
   const notifications = [
@@ -59,6 +60,11 @@ export default function Navbar() {
       icon: Trophy
     }
   ]
+
+  const handleLogout=()=>{
+    logout()
+    navigate("/auth/login", { replace: true })
+  }
 
   const unreadCount = notifications.filter(n => n.unread).length
 
@@ -203,7 +209,7 @@ export default function Navbar() {
                   </Link>
                   <hr className="my-1" />
                   <button
-                    onClick={logout}
+                    onClick={handleLogout}
                     className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                   >
                     <LogOut className="w-4 h-4 mr-2" />

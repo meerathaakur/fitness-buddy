@@ -1,15 +1,30 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Save, Bell, Shield, User, Palette, Globe, Smartphone, Mail, Lock, Eye, EyeOff, Check, Sun, Moon, Monitor } from 'lucide-react'
 import Card from '../../components/common/Card'
 import Button from '../../components/common/Button'
 import PageHeader from '../../components/common/PageHeader'
 import { useAuth } from '../../hooks/useAuth'
-import { useTheme } from '../../hooks/useTheme'
 import { toast } from '../../components/common/Toast'
+
+// mock or static data
+    const tabs = [
+        { id: 'profile', label: 'Profile', icon: User },
+        { id: 'notifications', label: 'Notifications', icon: Bell },
+        { id: 'privacy', label: 'Privacy', icon: Shield },
+        { id: 'security', label: 'Security', icon: Lock },
+        { id: 'appearance', label: 'Appearance', icon: Palette }
+    ]
+
+    const workoutTypes = [
+        'strength', 'cardio', 'yoga', 'pilates', 'swimming', 'cycling', 'running', 'sports'
+    ]
+
+    const fitnessGoalOptions = [
+        'weight_loss', 'muscle_gain', 'endurance', 'flexibility', 'general_fitness', 'strength'
+    ]
 
 export default function Settings() {
     const { user, updateProfile } = useAuth()
-    const { theme, toggleTheme } = useTheme()
     const [activeTab, setActiveTab] = useState('profile')
     const [showCurrentPassword, setShowCurrentPassword] = useState(false)
     const [showNewPassword, setShowNewPassword] = useState(false)
@@ -62,36 +77,6 @@ export default function Settings() {
         sessionTimeout: '30'
     })
 
-    // Appearance settings - Initialize with current theme
-    const [appearance, setAppearance] = useState({
-        theme: theme,
-        language: 'en',
-        timezone: 'America/New_York',
-        dateFormat: 'MM/DD/YYYY',
-        units: 'imperial'
-    })
-
-    // Update appearance state when theme context changes
-    useEffect(() => {
-        setAppearance(prev => ({ ...prev, theme: theme }))
-    }, [theme])
-
-    const tabs = [
-        { id: 'profile', label: 'Profile', icon: User },
-        { id: 'notifications', label: 'Notifications', icon: Bell },
-        { id: 'privacy', label: 'Privacy', icon: Shield },
-        { id: 'security', label: 'Security', icon: Lock },
-        { id: 'appearance', label: 'Appearance', icon: Palette }
-    ]
-
-    const workoutTypes = [
-        'strength', 'cardio', 'yoga', 'pilates', 'swimming', 'cycling', 'running', 'sports'
-    ]
-
-    const fitnessGoalOptions = [
-        'weight_loss', 'muscle_gain', 'endurance', 'flexibility', 'general_fitness', 'strength'
-    ]
-
     const setSavingState = (section, isLoading) => {
         setSavingStates(prev => ({ ...prev, [section]: isLoading }))
     }
@@ -104,6 +89,7 @@ export default function Settings() {
             updateProfile(profileData)
             toast.success('Profile updated successfully!')
         } catch (error) {
+            console.log(error.message)
             toast.error('Failed to update profile')
         } finally {
             setSavingState('profile', false)
@@ -118,6 +104,7 @@ export default function Settings() {
             // Save notification preferences
             toast.success('Notification preferences saved!')
         } catch (error) {
+            console.log(error.message)
             toast.error('Failed to save notification preferences')
         } finally {
             setSavingState('notifications', false)
@@ -167,24 +154,6 @@ export default function Settings() {
         }
     }
 
-    const handleAppearanceSave = async () => {
-        setSavingState('appearance', true)
-        try {
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000))
-
-            // Apply theme change immediately if different from current
-            if (appearance.theme !== theme) {
-                toggleTheme()
-            }
-
-            toast.success('Appearance settings saved!')
-        } catch (error) {
-            toast.error('Failed to save appearance settings')
-        } finally {
-            setSavingState('appearance', false)
-        }
-    }
 
     const handleWorkoutPreferenceToggle = (type) => {
         setProfileData(prev => ({
@@ -204,15 +173,6 @@ export default function Settings() {
         }))
     }
 
-    const handleThemeChange = (selectedTheme) => {
-        setAppearance(prev => ({ ...prev, theme: selectedTheme }))
-
-        // Apply theme change immediately for better UX
-        if (selectedTheme !== theme) {
-            toggleTheme()
-            toast.success(`Switched to ${selectedTheme} theme`)
-        }
-    }
 
     return (
         <div className="space-y-6">
@@ -776,165 +736,6 @@ export default function Settings() {
                         </Card>
                     )}
 
-                    {/* Appearance Tab */}
-                    {activeTab === 'appearance' && (
-                        <Card className="p-6">
-                            <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-xl font-semibold text-gray-900">Appearance Settings</h2>
-                                <Button
-                                    onClick={handleAppearanceSave}
-                                    disabled={savingStates.appearance}
-                                    className="min-w-[120px]"
-                                >
-                                    {savingStates.appearance ? (
-                                        <>
-                                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                                            Saving...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Save className="w-4 h-4 mr-2" />
-                                            Save Changes
-                                        </>
-                                    )}
-                                </Button>
-                            </div>
-
-                            <div className="space-y-6">
-                                <div>
-                                    <h3 className="text-lg font-medium text-gray-900 mb-4">Theme</h3>
-                                    <p className="text-sm text-gray-600 mb-4">Choose your preferred theme for the application</p>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
-                                        {/* Light Theme */}
-                                        <button
-                                            onClick={() => handleThemeChange('light')}
-                                            className={`p-4 border-2 rounded-lg text-left transition-all hover:shadow-md ${theme === 'light'
-                                                    ? 'border-primary-500 bg-primary-50 shadow-md'
-                                                    : 'border-gray-200 hover:border-gray-300'
-                                                }`}
-                                        >
-                                            <div className="flex items-center justify-between mb-3">
-                                                <div className="flex items-center space-x-2">
-                                                    <Sun className="w-5 h-5 text-yellow-500" />
-                                                    <span className="font-medium text-gray-900">Light</span>
-                                                </div>
-                                                {theme === 'light' && (
-                                                    <Check className="w-5 h-5 text-primary-600" />
-                                                )}
-                                            </div>
-                                            <div className="w-full h-16 bg-white border border-gray-200 rounded mb-2 relative overflow-hidden">
-                                                <div className="h-3 bg-gray-100 border-b border-gray-200"></div>
-                                                <div className="p-2 space-y-1">
-                                                    <div className="h-2 bg-gray-300 rounded w-3/4"></div>
-                                                    <div className="h-2 bg-gray-200 rounded w-1/2"></div>
-                                                </div>
-                                            </div>
-                                            <p className="text-xs text-gray-600">Clean and bright interface</p>
-                                        </button>
-
-                                        {/* Dark Theme */}
-                                        <button
-                                            onClick={() => handleThemeChange('dark')}
-                                            className={`p-4 border-2 rounded-lg text-left transition-all hover:shadow-md ${theme === 'dark'
-                                                    ? 'border-primary-500 bg-primary-50 shadow-md'
-                                                    : 'border-gray-200 hover:border-gray-300'
-                                                }`}
-                                        >
-                                            <div className="flex items-center justify-between mb-3">
-                                                <div className="flex items-center space-x-2">
-                                                    <Moon className="w-5 h-5 text-blue-500" />
-                                                    <span className="font-medium text-gray-900">Dark</span>
-                                                </div>
-                                                {theme === 'dark' && (
-                                                    <Check className="w-5 h-5 text-primary-600" />
-                                                )}
-                                            </div>
-                                            <div className="w-full h-16 bg-gray-800 border border-gray-600 rounded mb-2 relative overflow-hidden">
-                                                <div className="h-3 bg-gray-700 border-b border-gray-600"></div>
-                                                <div className="p-2 space-y-1">
-                                                    <div className="h-2 bg-gray-500 rounded w-3/4"></div>
-                                                    <div className="h-2 bg-gray-600 rounded w-1/2"></div>
-                                                </div>
-                                            </div>
-                                            <p className="text-xs text-gray-600">Easy on the eyes in low light</p>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <h3 className="text-lg font-medium text-gray-900 mb-4">Localization</h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-md">
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                                Language
-                                            </label>
-                                            <select
-                                                value={appearance.language}
-                                                onChange={(e) => setAppearance(prev => ({ ...prev, language: e.target.value }))}
-                                                className="input w-full"
-                                            >
-                                                <option value="en">English</option>
-                                                <option value="es">Español</option>
-                                                <option value="fr">Français</option>
-                                                <option value="de">Deutsch</option>
-                                            </select>
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                                Timezone
-                                            </label>
-                                            <select
-                                                value={appearance.timezone}
-                                                onChange={(e) => setAppearance(prev => ({ ...prev, timezone: e.target.value }))}
-                                                className="input w-full"
-                                            >
-                                                <option value="America/New_York">Eastern Time</option>
-                                                <option value="America/Chicago">Central Time</option>
-                                                <option value="America/Denver">Mountain Time</option>
-                                                <option value="America/Los_Angeles">Pacific Time</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <h3 className="text-lg font-medium text-gray-900 mb-4">Display Preferences</h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-md">
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                                Date Format
-                                            </label>
-                                            <select
-                                                value={appearance.dateFormat}
-                                                onChange={(e) => setAppearance(prev => ({ ...prev, dateFormat: e.target.value }))}
-                                                className="input w-full"
-                                            >
-                                                <option value="MM/DD/YYYY">MM/DD/YYYY</option>
-                                                <option value="DD/MM/YYYY">DD/MM/YYYY</option>
-                                                <option value="YYYY-MM-DD">YYYY-MM-DD</option>
-                                            </select>
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                                Units
-                                            </label>
-                                            <select
-                                                value={appearance.units}
-                                                onChange={(e) => setAppearance(prev => ({ ...prev, units: e.target.value }))}
-                                                className="input w-full"
-                                            >
-                                                <option value="imperial">Imperial (lbs, ft)</option>
-                                                <option value="metric">Metric (kg, cm)</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </Card>
-                    )}
                 </div>
             </div>
         </div>

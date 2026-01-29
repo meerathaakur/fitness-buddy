@@ -22,6 +22,11 @@ const notificationSchema = new mongoose.Schema({
         ],
         required: true
     },
+    // type: { // we will upgrade on it later
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref:'NotificationType',
+    //     required: true
+    // },
     title: {
         type: String,
         required: true

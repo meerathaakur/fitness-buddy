@@ -6,6 +6,7 @@ import Card from '../components/common/Card'
 import { useAuth } from '../hooks/useAuth'
 import { toast } from '../components/common/Toast'
 
+// update it later for admin control
 const steps = [
   {
     title: 'What are your fitness goals?',

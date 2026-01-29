@@ -5,8 +5,8 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const EmailHelper = require('../utils/emailHelpers');
 
-const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
+const generateToken = (id,role='user') => {
+    return jwt.sign({ id,role }, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRES_IN || '7d'
     });
 };
@@ -17,14 +17,14 @@ const generateOTP = () => {
 
 exports.register = async (req, res) => {
     try {
-        const { name, email, password, location, fitnessLevel } = req.body;
+        const { name, email, password, location, fitnessLevel } = req.body; // location can be object or string will update later
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).json({ error: 'User already exists' });
+            return res.status(400).json({success:false, error: 'User already exists' });
         }
 
-        const user = await User.create({ name, email, password, preferences: { location, fitnessLevel } });
+        const user = await User.create({ name, email, password,role:'user', preferences: { location, fitnessLevel } });
 
         // Generate OTP for email verification
         const otp = generateOTP();
@@ -40,6 +40,7 @@ exports.register = async (req, res) => {
         const token = generateToken(user._id);
 
         res.status(201).json({
+            success:true,
             message: 'User registered successfully. Please verify your email.',
             token,
             user: {
@@ -50,7 +51,7 @@ exports.register = async (req, res) => {
             preferences: user.preferences || {}
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({success:false, error: error.message });
     }
 };
 
@@ -60,7 +61,7 @@ exports.login = async (req, res) => {
 
         const user = await User.findOne({ email }).select('+password');
         if (!user || !(await user.comparePassword(password))) {
-            return res.status(401).json({ error: 'Invalid credentials' });
+            return res.status(401).json({success:false, error: 'Invalid credentials' });
         }
 
         user.lastSeen = new Date();
@@ -68,19 +69,20 @@ exports.login = async (req, res) => {
 
         const token = generateToken(user._id);
 
-        res.json({
+        res.status(200).json({
+            success:true,
             message: 'Login successful',
             token,
             user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                avatar: user.avatar,
-                preferences: user.preferences
+                id: user?._id,
+                name: user?.name,
+                email: user?.email,
+                avatar: user?.avatar,
+                preferences: user?.preferences
             }
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({success:false, error: error.message });
     }
 };
 
@@ -97,16 +99,16 @@ exports.verifyEmail = async (req, res) => {
         });
 
         if (!otpRecord) {
-            return res.status(400).json({ error: 'Invalid or expired OTP' });
+            return res.status(400).json({success:false, error: 'Invalid or expired OTP' });
         }
 
         await User.findOneAndUpdate({ email }, { emailVerified: true });
         otpRecord.isUsed = true;
         await otpRecord.save();
 
-        res.json({ message: 'Email verified successfully' });
+        res.status(200).json({success:true, message: 'Email verified successfully' });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({success:false, error: error.message });
     }
 };
 
@@ -116,7 +118,7 @@ exports.forgotPassword = async (req, res) => {
 
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+            return res.status(404).json({success:false, error: 'User not found' });
         }
 
         const otp = generateOTP();
@@ -129,9 +131,9 @@ exports.forgotPassword = async (req, res) => {
         // Send password reset email using EmailHelper
         await EmailHelper.sendPasswordResetEmail(email, user.name, otp);
 
-        res.json({ message: 'Password reset code sent to your email' });
+        res.status(200).json({success:true, message: 'Password reset code sent to your email' });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({success:false, error: error.message });
     }
 };
 
@@ -148,7 +150,7 @@ exports.resetPassword = async (req, res) => {
         });
 
         if (!otpRecord) {
-            return res.status(400).json({ error: 'Invalid or expired OTP' });
+            return res.status(400).json({success:false, error: 'Invalid or expired OTP' });
         }
 
         const user = await User.findOne({ email });
@@ -158,8 +160,8 @@ exports.resetPassword = async (req, res) => {
         otpRecord.isUsed = true;
         await otpRecord.save();
 
-        res.json({ message: 'Password reset successfully' });
+        res.status(200).json({success:true, message: 'Password reset successfully' });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({success:false, error: error.message });
     }
 };

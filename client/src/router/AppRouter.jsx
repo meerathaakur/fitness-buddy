@@ -1,6 +1,5 @@
 import React from 'react'
-import { Routes, Route, Navigate, Router } from 'react-router-dom'
-import { useAuth } from '../hooks/useAuth'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
 import AuthLayout from '../layouts/AuthLayout'
 import OnboardingLayout from '../layouts/OnboardingLayout'
@@ -27,67 +26,48 @@ import ChallengeLeaderboard from '../pages/challenges/ChallengeLeaderboard'
 import Notifications from '../pages/notifications/Notifications'
 import Onboarding from '../pages/Onboarding'
 import NotFound from '../pages/NotFound'
+import { RequireAuth, RequireGuest } from './guards'
 
-const ProtectedRoute = ({ children }) => {
-    const { user, loading } = useAuth()
-    const token = localStorage.getItem("token")
-    // console.log(loading)
-    if (loading) {
-        return <div className="flex items-center justify-center min-h-screen">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-600"></div>
-        </div>
-    }
-
-    return (user || token) ? children : <Navigate to="/auth/login" />
-}
-
-const PublicRoute = ({ children }) => {
-    const { user, loading } = useAuth()
-    const token = localStorage.getItem("token")
-    // console.log(loading)
-    if (loading) {
-        return <div className="flex items-center justify-center min-h-screen">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-600"></div>
-        </div>
-    }
-
-    return !(user || token) ? children : <Navigate to="/dashboard" />
-}
 
 export default function AppRouter() {
     return (
         <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Home />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
 
-            {/* Auth Routes */}
-            <Route path="/auth" element={<PublicRoute><AuthLayout /></PublicRoute>}>
-                <Route path="login" element={<Login />} />
-                <Route path="register" element={<Register />} />
+            {/* Auth Routes (login/register) */}
+            <Route element={<RequireGuest />}>
+                <Route path="/auth" element={<AuthLayout />}>
+                    <Route path="login" element={<Login />} />
+                    <Route path="register" element={<Register />} />
+                </Route>
             </Route>
 
-            {/* Onboarding */}
-            <Route path="/onboarding" element={<ProtectedRoute><OnboardingLayout /></ProtectedRoute>}>
-                <Route index element={<Onboarding />} />
-            </Route>
-
-            {/* Protected Routes */}
-            <Route path="/" element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
-                <Route path="dashboard" element={<Dashboard />} />
-                <Route path="profile" element={<Profile />} />
-                <Route path="profile/edit" element={<EditProfile />} />
-                <Route path="settings" element={<Settings />} />
-                <Route path="workouts" element={<Workouts />} />
-                <Route path="workouts/:id" element={<WorkoutDetail />} />
-                <Route path="workout-library" element={<WorkoutLibrary />} />
-                <Route path="buddies" element={<BuddyFinder />} />
-                <Route path="my-buddies" element={<MyBuddies />} />
-                <Route path="messages" element={<Messages />} />
-                <Route path="goals" element={<Goals />} />
-                <Route path="challenges" element={<Challenges />} />
-                <Route path="challenges/:id" element={<ChallengeDetail />} />
-                <Route path="challenges/:id/leaderboard" element={<ChallengeLeaderboard />} />
-                <Route path="notifications" element={<Notifications />} />
+            {/* Protected Routes  */}
+            <Route element={<RequireAuth />}>
+                {/* components and pages */}
+                <Route element={<MainLayout />}>
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/profile/edit" element={<EditProfile />} />
+                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/workouts" element={<Workouts />} />
+                    <Route path="/workouts/:id" element={<WorkoutDetail />} />
+                    <Route path="/workout-library" element={<WorkoutLibrary />} />
+                    <Route path="/buddies" element={<BuddyFinder />} />
+                    <Route path="/my-buddies" element={<MyBuddies />} />
+                    <Route path="/messages" element={<Messages />} />
+                    <Route path="/goals" element={<Goals />} />
+                    <Route path="/challenges" element={<Challenges />} />
+                    <Route path="/challenges/:id" element={<ChallengeDetail />} />
+                    <Route path="/challenges/:id/leaderboard" element={<ChallengeLeaderboard />} />
+                    <Route path="/notifications" element={<Notifications />} />
+                </Route>
+                {/* Onboarding */}
+                <Route path="/onboarding" element={<OnboardingLayout />}>
+                    <Route index element={<Onboarding />} />
+                </Route>
             </Route>
 
             {/* 404 */}

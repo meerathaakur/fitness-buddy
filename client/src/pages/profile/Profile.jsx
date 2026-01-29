@@ -8,10 +8,6 @@ import Button from '../../components/common/Button'
 import PageHeader from '../../components/common/PageHeader'
 import { toast } from '../../components/common/Toast'
 
-const Profile = () => {
-  const { user } = useAuth()
-  const [activeTab, setActiveTab] = useState('overview')
-
   // Mock data for profile stats and activities
   const stats = [
     { label: 'Total Workouts', value: '127', icon: TrendingUp, color: 'text-blue-600' },
@@ -149,6 +145,11 @@ const Profile = () => {
     }
   ]
 
+const Profile = () => {
+  const { user } = useAuth()
+  const [activeTab, setActiveTab] = useState('overview')
+  console.log("user data from Profile >>>",user)
+
   const handleShare = () => {
     toast.success('Profile link copied to clipboard!')
   }
@@ -243,10 +244,10 @@ const Profile = () => {
             <div className="mb-4">
               <h2 className="text-2xl font-bold text-gray-900">{user.name}</h2>
               <div className="flex items-center space-x-4 mt-2 text-gray-600">
-                {user.location && (
+                {user?.location && (
                   <div className="flex items-center">
                     <MapPin className="w-4 h-4 mr-1" />
-                    <span>{user.location}</span>
+                    <span>{user?.location?.address}</span>
                   </div>
                 )}
                 <div className="flex items-center">
@@ -351,7 +352,7 @@ const Profile = () => {
             </div>
           </Card>
 
-          {/* Quick Stats */}
+          {/* Quick Stats */} {/** make it dynamic data will come from db on analysis basis */}
           <Card className="p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">This Month</h2>
             <div className="space-y-4">

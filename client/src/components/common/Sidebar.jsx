@@ -81,7 +81,7 @@ export default function Sidebar() {
         onClick={() => setIsOpen(!isOpen)} 
         className="absolute right-0 top-0 bg-primary-500 text-white rounded-sm p-1 shadow"
       >
-        {isOpen ? <ArrowLeftToLine className="w-5 h-5 text-gray-400" /> : <Menu className="w-5 h-5 text-gray-400" />}
+        {isOpen ? <ArrowLeftToLine className="w-5 h-5 text-gray-400 cursor-pointer" /> : <Menu className="w-5 h-5 text-gray-400 cursor-pointer" />}
       </button>
       <nav className="p-4 space-y-2 mt-8">
         {navigation.map((item) => {
