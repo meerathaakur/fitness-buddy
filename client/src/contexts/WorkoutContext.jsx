@@ -88,9 +88,9 @@ export const WorkoutProvider = ({ children }) => {
       }
 
       const data = await response.json()
-      console.log(data)
+      console.log("addWorkout:::",data)
       // setWorkouts()
-      return { success: response.ok, data: data }
+      return data; //{ success: response.ok, data: data }
     } catch (error) {
       return { success: false, error: error.message }
     }
@@ -111,7 +111,7 @@ export const WorkoutProvider = ({ children }) => {
       }
 
       const data = await response.json()
-      console.log("dynamic workout:::", data)
+      console.log("getUserWorkouts:::", data)
       return data
     } catch (error) {
       return { success: false, error: error.message }
@@ -246,8 +246,8 @@ export const WorkoutProvider = ({ children }) => {
       if (!response.ok) {
         return { success: false, status: response.status }
       }
-
-      return { success: true }
+      
+      return { success: true, message:"Workout deleted successfully" }
     } catch (error) {
       return { success: false, error: error.message }
 
@@ -269,9 +269,8 @@ export const WorkoutProvider = ({ children }) => {
         return { success: response.ok }
       }
       const data = await response.json()
-      // setGoal()
       console.log("POST goalData:::", data)
-      return { success: response.ok, data: data }
+      return data; //{ success: response.ok, data: data }
     } catch (error) {
       return { success: false, error: error.message }
     }
