@@ -5,7 +5,7 @@ const GoalService = require('../services/goal.service');
 const WorkoutService = require('../services/workout.service');
 const EmailHelpers = require('../utils/emailHelpers');
 const User = require('../models/User');
-
+ 
 class Scheduler {
     static init() {
         // Check goal deadlines daily at 9 AM
