@@ -109,7 +109,6 @@ export const WorkoutProvider = ({ children }) => {
       if (!response.ok) {
         return { success: response.ok }
       }
-
       const data = await response.json()
       console.log("getUserWorkouts:::", data)
       return data
@@ -287,7 +286,7 @@ export const WorkoutProvider = ({ children }) => {
 
 
   const value = {
-    workouts,
+    // workouts,
     goals,
     addWorkout,
     getUserWorkouts,

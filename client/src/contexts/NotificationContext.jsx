@@ -1,5 +1,10 @@
 // src/contexts/NotificationContext.js
 import { createContext, useState } from 'react';
+import {
+  getNotificationsAPI,
+  markNotificationAsReadAPI,
+  markAllNotificationsAsReadAPI
+} from "../api/all.api"
 
 const NotificationContext = createContext();
 
