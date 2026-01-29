@@ -1,17 +1,17 @@
 import React from 'react'
 import Button from '../common/Button'
 import { toast } from '../common/Toast'
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 export default function SocialAuth({ mode = 'login' }) {
   const handleSocialAuth = (provider) => {
-    // const baseURL = "http://localhost:8080/api";
-    // if (provider === "Google") {
-    //   window.location.href = `${baseURL}/auth/google`
-    // } else if (provider === "Facebook") {
-    //   window.location.href = `${baseURL}/auth/facebook`
-    // } else {
-    //   toast.info(`${provider} authentication not available`)
-    // }
+    if (provider === "Google") {
+      window.location.href = `${baseURL}/auth/google`
+    } else if (provider === "Facebook") {
+      window.location.href = `${baseURL}/auth/facebook`
+    } else {
+      toast.info(`${provider} authentication not available`)
+    }
 
   }
 

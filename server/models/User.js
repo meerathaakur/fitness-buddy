@@ -19,7 +19,8 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: function() {
             return !this.socialLogin;
-        }
+        },
+        select:false
     },
     role:{
         type:String,

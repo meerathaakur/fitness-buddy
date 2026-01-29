@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from 'react'
+import React, { createContext, useState } from 'react'
 import {
   createWorkoutAPI,
   getUserWorkoutAPI,
@@ -8,26 +8,20 @@ import {
   getWorkoutAPI,
   updateWorkoutAPI,
   deleteWorkoutAPI,
-  findBuddyAPI,
-  getBuddyAPI,
-  sendBuddyRequestAPI,
-  responseToBuddyRequestAPI
+  createGoalAPI,
+  // findBuddyAPI,
+  // getBuddyAPI,
+  // sendBuddyRequestAPI,
+  // responseToBuddyRequestAPI
 } from '../api/all.api'
 
 const WorkoutContext = createContext()
 
+const getStoredToken = () => localStorage.getItem('token') || sessionStorage.getItem('token')
+
 export const WorkoutProvider = ({ children }) => {
   const [workouts, setWorkouts] = useState([])
-
-  // useEffect(()=>{
-  //   const token = localStorage.getItem("token")
-  //   const session = sessionStorage.getItem("token")
-  //   const validation = token ? token : session
-  //   if(validation){
-  //     setWorkouts()
-  //   }
-
-  // },[])
+  const [token, setToken] = useState(getStoredToken())
 
   const [goals, setGoals] = useState([
     {
@@ -76,17 +70,16 @@ export const WorkoutProvider = ({ children }) => {
       status: 'pending'
     }
   ])
+
+  // -----WORKOUT API CALLS------
   // workoutData -->{title, images, duration, type, caloriesBurned, intensity, location, buddies, images, isPublic, exercises, workoutDate}
   const addWorkout = async (workoutData) => {
     try {
-      const token = localStorage.getItem("token")
-      const session = sessionStorage.getItem("token")
-      const validation = token ? token : session
       const response = await fetch(createWorkoutAPI, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${validation}`
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify(workoutData)
       })
@@ -96,7 +89,7 @@ export const WorkoutProvider = ({ children }) => {
 
       const data = await response.json()
       console.log(data)
-      setWorkouts()
+      // setWorkouts()
       return { success: response.ok, data: data }
     } catch (error) {
       return { success: false, error: error.message }
@@ -105,14 +98,11 @@ export const WorkoutProvider = ({ children }) => {
 
   const getUserWorkouts = async () => {
     try {
-      const token = localStorage.getItem("token")
-      const session = sessionStorage.getItem("token")
-      const validation = token ? token : session
       const response = await fetch(getUserWorkoutAPI, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${validation}`
+          Authorization: `Bearer ${token}`
         }
       })
 
@@ -121,7 +111,8 @@ export const WorkoutProvider = ({ children }) => {
       }
 
       const data = await response.json()
-      console.log(data)
+      console.log("dynamic workout:::", data)
+      return data
     } catch (error) {
       return { success: false, error: error.message }
 
@@ -131,14 +122,11 @@ export const WorkoutProvider = ({ children }) => {
 
   const getWeeklyAnalytics = async () => {
     try {
-      const token = localStorage.getItem("token")
-      const session = sessionStorage.getItem("token")
-      const validation = token ? token : session
       const response = await fetch(getWeeklyAnalyticsAPI, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${validation}`
+          Authorization: `Bearer ${token}`
         }
       })
       if (!response.ok) {
@@ -146,7 +134,8 @@ export const WorkoutProvider = ({ children }) => {
       }
 
       const data = await response.json()
-      console.log(data)
+      console.log("data:::",data)
+      return data
     } catch (error) {
       return { success: false, error: error.message }
 
@@ -155,14 +144,11 @@ export const WorkoutProvider = ({ children }) => {
 
   const getMonthlyAnalytics = async () => {
     try {
-      const token = localStorage.getItem("token")
-      const session = sessionStorage.getItem("token")
-      const validation = token ? token : session
       const response = await fetch(getMonthlyAnalyticsAPI, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${validation}`
+          Authorization: `Bearer ${token}`
         }
       })
       if (!response.ok) {
@@ -171,6 +157,7 @@ export const WorkoutProvider = ({ children }) => {
 
       const data = await response.json()
       console.log(data)
+      return data
     } catch (error) {
       return { success: false, error: error.message }
 
@@ -179,14 +166,11 @@ export const WorkoutProvider = ({ children }) => {
 
   const getWorkoutStats = async () => {
     try {
-      const token = localStorage.getItem("token")
-      const session = sessionStorage.getItem("token")
-      const validation = token ? token : session
       const response = await fetch(getWorkoutStatsAPI, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${validation}`
+          Authorization: `Bearer ${token}`
         }
       })
       if (!response.ok) {
@@ -195,6 +179,7 @@ export const WorkoutProvider = ({ children }) => {
 
       const data = await response.json()
       console.log(data)
+      return data;
     } catch (error) {
       return { success: false, error: error.message }
 
@@ -203,14 +188,11 @@ export const WorkoutProvider = ({ children }) => {
 
   const getWorkoutById = async (id) => {
     try {
-      const token = localStorage.getItem("token")
-      const session = sessionStorage.getItem("token")
-      const validation = token ? token : session
       const response = await fetch(`${getWorkoutAPI}/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${validation}`
+          Authorization: `Bearer ${token}`
         }
       })
       if (!response.ok) {
@@ -219,6 +201,7 @@ export const WorkoutProvider = ({ children }) => {
 
       const data = await response.json()
       console.log(data)
+      return data
     } catch (error) {
       return { success: false, error: error.message }
 
@@ -229,14 +212,11 @@ export const WorkoutProvider = ({ children }) => {
   const updateWorkout = async (id, updateData) => {
 
     try {
-      const token = localStorage.getItem("token")
-      const session = sessionStorage.getItem("token")
-      const validation = token ? token : session
       const response = await fetch(`${updateWorkoutAPI}/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${validation}`
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify(updateData)
       })
@@ -246,6 +226,7 @@ export const WorkoutProvider = ({ children }) => {
 
       const data = await response.json()
       console.log(data)
+      return data
     } catch (error) {
       return { success: false, error: error.message }
 
@@ -255,14 +236,11 @@ export const WorkoutProvider = ({ children }) => {
 
   const deleteWorkout = async (id) => {
     try {
-      const token = localStorage.getItem("token")
-      const session = sessionStorage.getItem("token")
-      const validation = token ? token : session
       const response = await fetch(`${deleteWorkoutAPI}/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${validation}`
+          Authorization: `Bearer ${token}`
         }
       })
       if (!response.ok) {
@@ -276,11 +254,28 @@ export const WorkoutProvider = ({ children }) => {
     }
   }
 
-
-  // Buddies
-  // const addGoal = (goal) => {
-
-  // }
+  // =====GOAL API CALLS=====
+  const addGoal = async (goalData) => {
+    try {
+      const response = await fetch(createGoalAPI, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(goalData)
+      })
+      if (!response.ok) {
+        return { success: response.ok }
+      }
+      const data = await response.json()
+      // setGoal()
+      console.log("POST goalData:::", data)
+      return { success: response.ok, data: data }
+    } catch (error) {
+      return { success: false, error: error.message }
+    }
+  }
 
   // const updateGoal = (id, updates) => {
 
@@ -290,14 +285,11 @@ export const WorkoutProvider = ({ children }) => {
 
   // }
 
-  // const connectBuddy = (buddyId) => {
 
-  // }
 
   const value = {
     workouts,
     goals,
-    buddies,
     addWorkout,
     getUserWorkouts,
     getWeeklyAnalytics,
@@ -305,8 +297,9 @@ export const WorkoutProvider = ({ children }) => {
     getWorkoutStats,
     getWorkoutById,
     updateWorkout,
-    deleteWorkout
-    
+    deleteWorkout,
+    addGoal,
+
   }
 
   return (

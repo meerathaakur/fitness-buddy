@@ -1,4 +1,6 @@
-const BASE_URL = "https://fitness-buddy-9o01.onrender.com";
+// const BASE_URL = "https://fitness-buddy-9o01.onrender.com";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+console.log("BASE API", BASE_URL)
 
 // Auth APIs
 export const registerAPI = `${BASE_URL}/auth/register`;

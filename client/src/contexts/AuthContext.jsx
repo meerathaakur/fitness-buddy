@@ -1,7 +1,7 @@
-import React, { createContext, useState, useEffect } from 'react'
-
+import React, { createContext, useEffect, useState } from 'react'
 import {
   getProfileAPI,
+  getUserAnalyticsAPI,
   loginAPI,
   registerAPI,
   updateProfileAPI,
@@ -11,142 +11,172 @@ import {
   // resetPasswordAPI,
   // updatePreferencesAPI,
   // updateLocationAPI
-} from "../api/all.api.js"
+} from '../api/all.api.js'
 
-const AuthContext = createContext()
+const AuthContext = createContext(null)
+
+const getStoredToken = () =>
+  localStorage.getItem('token') || sessionStorage.getItem('token')
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [token, setToken] = useState(getStoredToken())
+  const [loading, setLoading] = useState(true)  
 
-
+  /* ---------------- INIT AUTH ---------------- */
 
   useEffect(() => {
-    // Simulate checking for existing session
-    const token = localStorage.getItem('token')
-    const session=sessionStorage.getItem("token")
-    if (token || session) {
-      async function getUserProfile() {
-        try {
-          setLoading(true)
-          const response = await fetch(getProfileAPI, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`
-            }
-          })
+    if (!token) {
+      setLoading(false)
+      return
+    }
+    /* ---------------- FETCH PROFILE ---------------- */
 
-          if (!response.ok) {
-            throw new Error(`Failed to fetch profile: ${response.status}`)
-          }
+    const fetchProfile = async () => {
+      try {
+        setLoading(true)
+        const res = await fetch(getProfileAPI, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
 
-          const data = await response.json()
-          setUser(data)
-          setLoading(false)
-          
-          // console.log(data)
-        } catch (error) {
-          console.error("Profile fetch error", error)
-          sessionStorage.removeItem("token")
-          setUser(null)
-        } finally {
-          setLoading(false)
-        }
+        if (!res.ok) throw new Error('Invalid token')
+
+        const data = await res.json()
+        // console.log("user data fetched fetchProfile >>>", data)
+        setUser(data?.user)
+      } catch (err) {
+        console.log(err)
+        clearSession()
+      } finally {
+        setLoading(false)
       }
-      getUserProfile()
-    } 
-    setLoading(false)
-  },[])
+    }
+    fetchProfile()
+  }, [token])
 
-  const login = async (email, password, rememberMe = false) => {
+  /* ---------------- HELPERS ---------------- */
+  const persistToken = (token, remember) => {
+    localStorage.removeItem('token')
+    sessionStorage.removeItem('token')
+
+    remember
+      ? localStorage.setItem('token', token)
+      : sessionStorage.setItem('token', token)
+
+    setToken(token)
+  }
+
+  const clearSession = () => {
+    localStorage.removeItem('token')
+    sessionStorage.removeItem('token')
+    setToken(null)
+    setUser(null)
+  }
+
+  /* ---------------- ACTIONS ---------------- */
+  const login = async (email, password, rememberMe) => {
     try {
       setLoading(true)
-      const response = await fetch(loginAPI, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email, password })
+      const res = await fetch(loginAPI, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
       })
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-      const data = await response.json()
-      localStorage.setItem('token', data.token)
-
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.message)
+      console.log("login data", data)
+      setUser(data?.user)
+      persistToken(data.token, rememberMe)
+      return data
+    } catch (err) {
+      return { success: false, error: err.message }
+    } finally {
       setLoading(false)
-      if (rememberMe) {
-        localStorage.setItem('token', data.token)
-      } else {
-        sessionStorage.setItem("token", data.token)
-      }
-      return { message: data.message, success: response.ok }
-    } catch (error) {
-      return { success: false, error: error.message }
     }
   }
 
-  const register = async (userData) => {
+  const register = async (payload, rememberMe = true) => {
     try {
       setLoading(true)
-      const response = await fetch(registerAPI, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(userData )
+      const res = await fetch(registerAPI, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
       })
-      const data = await response.json()
+
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.message)
+
+      persistToken(data.token, rememberMe)
+      return { success: true }
+    } catch (err) {
+      return { success: false, error: err.message }
+    } finally {
       setLoading(false)
-      // const newUser = { ...data.user, ...userData }
-      localStorage.setItem('token', data.token)
-      // setUser(newUser)
-      return { success: response.ok, message: data.message }
-    } catch (error) {
-      return { success: false, error: error.message }
     }
   }
 
   const logout = () => {
-    localStorage.removeItem('token')
-    setUser(null)
+    clearSession()
   }
 
-  const updateProfile = async (userData) => {
-    const token = localStorage.getItem("token")
+  const updateProfile = async (payload) => {
     try {
-      const response = await fetch(updateProfileAPI, {
-        method: "PUT",
+      console.log("payload:::",payload)
+      const res = await fetch(updateProfileAPI, {
+        method: 'PUT',
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(userData)
+        body: payload, 
       })
 
-      if (!response.ok) {
-        throw new Error("Failed to update profile:", response.status)
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.message)
+      console.log("updateProfile>>>",data)
+      setUser((prev) => ({ ...prev, ...data.user }))
+      return { success: true, message:"profile updated sucessfully" }
+    } catch (err) {
+      return { success: false, error: err.message }
+    }
+  }
+
+  const getUserAnalysisData=async()=>{
+    try {
+      const response=await fetch(getUserAnalyticsAPI,{
+        method:"GET",
+        headers:{
+          "Content-Type": "application/json",
+          Authorization:`Bearer ${token}`
+        }
+      })
+      if(!response.ok){
+        throw new Error("Failed to fetch Analytic Data:", response.status)
       }
 
-      const data = await response.json()
-      setUser((prev) => ({ ...prev, ...data.user }))
-      return { success: response.ok, message: data.message }
+      const data=await response.json()
+      console.log("getUserAnalysisData:::",data)
+      return data
     } catch (error) {
       return { success: false, error: error.message }
+      
     }
-
   }
 
-  const value = {
-    user,
-    loading,
-    login,
-    register,
-    logout,
-    updateProfile
-  }
+  const value={
+        user,
+        token,
+        loading,
+        isAuthenticated: !!user && !!token,
+        login,
+        register,
+        logout,
+        updateProfile,
+        getUserAnalysisData,
+      }
 
   return (
     <AuthContext.Provider value={value}>

@@ -15,12 +15,20 @@ exports.getProfile = async (req, res) => {
 exports.updateProfile = async (req, res) => { // make changes can cause error user can't update directly update profile
     try {
         const updates = req.body;
-
+        console.log("updates:::",updates)
+        console.log("req.file",req.file)
         // Handle avatar upload
         if (req.file) {
             const result = await uploadToCloudinary(req.file.path);
             updates.avatar = result.secure_url;
         }
+
+        if (typeof updates.preferences === "string") {
+            updates.preferences = JSON.parse(updates.preferences);
+        }
+        if (typeof updates.location === "string") {
+            updates.location = JSON.parse(updates.location);
+}
 
         const user = await User.findByIdAndUpdate(
             req.user._id,
@@ -28,7 +36,7 @@ exports.updateProfile = async (req, res) => { // make changes can cause error us
             { new: true, runValidators: true }
         );
 
-        res.status(200).json({success:true,user});
+        res.status(200).json({success:true,message:"profile updated sucessfully",user});
     } catch (error) {
         res.status(500).json({success:false, error: error.message });
     }
