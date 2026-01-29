@@ -6,21 +6,29 @@ const { uploadToCloudinary } = require('../utils/cloudinary');
 exports.getProfile = async (req, res) => {
     try {
         const user = await User.findById(req.user._id).populate('buddies', 'name avatar');
-        res.json(user);
+        res.status(200).json({success:true,user});
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({success:false, error: error.message });
     }
 };
 
-exports.updateProfile = async (req, res) => {
+exports.updateProfile = async (req, res) => { // make changes can cause error user can't update directly update profile
     try {
         const updates = req.body;
-
+        console.log("updates:::",updates)
+        console.log("req.file",req.file)
         // Handle avatar upload
         if (req.file) {
             const result = await uploadToCloudinary(req.file.path);
             updates.avatar = result.secure_url;
         }
+
+        if (typeof updates.preferences === "string") {
+            updates.preferences = JSON.parse(updates.preferences);
+        }
+        if (typeof updates.location === "string") {
+            updates.location = JSON.parse(updates.location);
+}
 
         const user = await User.findByIdAndUpdate(
             req.user._id,
@@ -28,9 +36,9 @@ exports.updateProfile = async (req, res) => {
             { new: true, runValidators: true }
         );
 
-        res.json(user);
+        res.status(200).json({success:true,message:"profile updated sucessfully",user});
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({success:false, error: error.message });
     }
 };
 
@@ -44,9 +52,9 @@ exports.updatePreferences = async (req, res) => {
             { new: true }
         );
 
-        res.json(user.preferences);
+        res.status(200).json({success:true,preferences:user.preferences});
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({success:false, error: error.message });
     }
 };
 
@@ -66,8 +74,8 @@ exports.updateLocation = async (req, res) => {
             { new: true }
         );
 
-        res.json({ message: 'Location updated successfully', location: user.location });
+        res.status(200).json({success:true, message: 'Location updated successfully', location: user.location });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({success:false, error: error.message });
     }
 };

@@ -16,13 +16,13 @@ import Card from '../../components/common/Card'
 import Button from '../../components/common/Button'
 import Avatar from '../../components/common/Avatar'
 import { useAuth } from '../../hooks/useAuth'
-import { getUserAnalyticsAPI } from '../../api/all.api'
 import { PageLoader } from '../../components/common/Loader'
 
 
 
 export default function Dashboard() {
-  const { user, loading } = useAuth()
+  const { user, loading,token, getUserAnalysisData } = useAuth()
+  console.log("user data:::",user)
   const [goal, setGoal] = useState({
     active: 0,
     completed: 0,
@@ -40,33 +40,18 @@ export default function Dashboard() {
     totalCalories: 0,
     totalDuration: 0
   })
-  // console.log(user, loading)
-  async function getUserAnalysisData(validation) {
-    const response = await fetch(getUserAnalyticsAPI, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${validation}`
-      }
-    })
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch Analytic Data:", response.status)
-    }
-
-    const data = await response.json()
-    setGoal((prev) => ({ ...prev, ...data.goals }));
-    setStreak((prev) => ({ ...prev, ...data.streaks }));
-    setWorkOut((prev) => ({ ...prev, ...data.workouts }));
-    setWeeklyProgress(data.weeklyProgress || []);
-    // console.log(data)
-  }
+  
   useEffect(() => {
-    const token = localStorage.getItem("token")
-    const session = sessionStorage.getItem("token")
-    const validation = token ? token : session
-    getUserAnalysisData(validation)
-  }, [])
+    async function fetchUserAnalysisData() {
+      const data = await getUserAnalysisData()
+      console.log(data)
+      setGoal((prev) => ({ ...prev, ...data?.goals }));
+      setStreak((prev) => ({ ...prev, ...data?.streaks }));
+      setWorkOut((prev) => ({ ...prev, ...data?.workouts }));
+      setWeeklyProgress(data?.weeklyProgress || []);
+    }
+    fetchUserAnalysisData()
+  }, [token])
 
 
 
@@ -144,20 +129,50 @@ export default function Dashboard() {
       </div>
 
       {/* Weekly Progress */}
-      <Card className="p-4 flex flex-col items-center">
-        <Calendar className="w-8 h-8 text-purple-600 mb-2" />
-        <h2 className="text-lg md:text-xl lg:text-xl font-semibold mb-2 text-blue-900">Weekly Progress</h2>
-        <ul className="text-gray-600 text-sm grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <Card className="p-6 bg-surface/80 backdrop-blur-glass border border-borderSoft rounded-2xl shadow-glass">
+        <div className="flex items-center gap-3 mb-6">
+          <Calendar className="w-8 h-8 text-purple-600 mb-2" />
+          <h2 className="text-lg md:text-xl lg:text-xl font-semibold mb-2 text-blue-900">Weekly Progress</h2>
+        </div>
+
+        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {weeklyProgress.map((week, i) => (
-            <li key={i} className="mb-2 border-b pb-2">
-              <strong>{week.week}</strong>
-              {Object.entries(week).map(([key, value]) => (
-                key !== "week" && ( // skip the "week" label since you already show it
-                  <p key={key}>
-                    {key}: {value}
-                  </p>
-                )
-              ))}
+            <li
+              key={i}
+              className="
+                bg-surfaceSoft/80
+                border border-borderSoft
+                rounded-xl
+                p-4
+                transition
+                hover:shadow-neon
+                hover:-translate-y-1
+              "
+            >
+              {/* Week Header */}
+              <p className="text-sm font-semibold text-primary mb-3">
+                {week.week}
+              </p>
+
+              {/* Week Stats */}
+              <div className="space-y-1 text-sm">
+                {Object.entries(week).map(
+                  ([key, value]) =>
+                    key !== 'week' && (
+                      <div
+                        key={key}
+                        className="flex justify-between text-textSecondary"
+                      >
+                        <span className="capitalize">
+                          {key.replace('_', ' ')}
+                        </span>
+                        <span className="text-textPrimary font-medium">
+                          {value}
+                        </span>
+                      </div>
+                    )
+                )}
+              </div>
             </li>
           ))}
         </ul>

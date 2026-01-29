@@ -6,7 +6,7 @@ import {
   markAllNotificationsAsReadAPI
 } from "../api/all.api"
 
-export const NotificationContext = createContext();
+const NotificationContext = createContext();
 
 export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
@@ -31,3 +31,5 @@ export const NotificationProvider = ({ children }) => {
     </NotificationContext.Provider>
   );
 };
+
+export {NotificationContext}

@@ -6,6 +6,45 @@ import Card from '../../components/common/Card'
 import Avatar from '../../components/common/Avatar'
 import Button from '../../components/common/Button'
 import { toast } from '../../components/common/Toast'
+import Select from '../../components/common/Select'
+
+// Options for dropdowns and checkboxes
+const fitnessLevels = [
+    { value: 'beginner', label: 'Beginner' },
+    { value: 'intermediate', label: 'Intermediate' },
+    { value: 'advanced', label: 'Advanced' },
+    { value: 'expert', label: 'Expert' }
+]
+
+const workoutTypes = [
+    'strength', 'cardio', 'yoga', 'pilates', 'swimming', 'cycling',
+    'running', 'sports', 'crossfit', 'boxing', 'dancing', 'hiking'
+]
+
+const fitnessGoalOptions = [
+    'weight_loss', 'muscle_gain', 'endurance', 'flexibility',
+    'general_fitness', 'strength', 'rehabilitation', 'competition'
+]
+
+const workoutFrequencies = [
+    { value: '1-2', label: '1-2 times per week' },
+    { value: '3-4', label: '3-4 times per week' },
+    { value: '5-6', label: '5-6 times per week' },
+    { value: 'daily', label: 'Daily' }
+]
+
+const workoutTimes = [
+    { value: 'early_morning', label: 'Early Morning (5-7 AM)' },
+    { value: 'morning', label: 'Morning (7-10 AM)' },
+    { value: 'midday', label: 'Mid-day (10 AM-2 PM)' },
+    { value: 'afternoon', label: 'Afternoon (2-6 PM)' },
+    { value: 'evening', label: 'Evening (6-9 PM)' },
+    { value: 'night', label: 'Night (9 PM+)' }
+]
+
+const availabilityOptions = [
+    'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'
+]
 
 export default function EditProfile() {
     const { user, updateProfile } = useAuth()
@@ -17,11 +56,19 @@ export default function EditProfile() {
         name: user?.name || '',
         email: user?.email || '',
         bio: user?.bio || '',
-        location: user?.location || '',
+        location: user?.location || {
+            type: "Point",
+            coordinates: [0, 0],
+            address: ""
+        },
         age: user?.age || '',
         height: user?.height || '',
         weight: user?.weight || '',
-        fitnessLevel: user?.fitnessLevel || 'beginner',
+        preferences:user?.preferences || {
+            fitnessLevel: user?.preferences?.fitnessLevel || 'beginner',
+            workoutTypes: user?.preferences?.workoutTypes || [],
+            availableTime: user?.preferences?.availableTime || []
+        },
         workoutPreferences: user?.workoutPreferences || [],
         fitnessGoals: user?.fitnessGoals || [],
         workoutFrequency: user?.workoutFrequency || '',
@@ -34,43 +81,7 @@ export default function EditProfile() {
     const [profileImage, setProfileImage] = useState(user?.avatar || '')
     const [imageFile, setImageFile] = useState(null)
 
-    // Options for dropdowns and checkboxes
-    const fitnessLevels = [
-        { value: 'beginner', label: 'Beginner' },
-        { value: 'intermediate', label: 'Intermediate' },
-        { value: 'advanced', label: 'Advanced' },
-        { value: 'expert', label: 'Expert' }
-    ]
 
-    const workoutTypes = [
-        'strength', 'cardio', 'yoga', 'pilates', 'swimming', 'cycling',
-        'running', 'sports', 'crossfit', 'boxing', 'dancing', 'hiking'
-    ]
-
-    const fitnessGoalOptions = [
-        'weight_loss', 'muscle_gain', 'endurance', 'flexibility',
-        'general_fitness', 'strength', 'rehabilitation', 'competition'
-    ]
-
-    const workoutFrequencies = [
-        { value: '1-2', label: '1-2 times per week' },
-        { value: '3-4', label: '3-4 times per week' },
-        { value: '5-6', label: '5-6 times per week' },
-        { value: 'daily', label: 'Daily' }
-    ]
-
-    const workoutTimes = [
-        { value: 'early_morning', label: 'Early Morning (5-7 AM)' },
-        { value: 'morning', label: 'Morning (7-10 AM)' },
-        { value: 'midday', label: 'Midday (10 AM-2 PM)' },
-        { value: 'afternoon', label: 'Afternoon (2-6 PM)' },
-        { value: 'evening', label: 'Evening (6-9 PM)' },
-        { value: 'night', label: 'Night (9 PM+)' }
-    ]
-
-    const availabilityOptions = [
-        'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'
-    ]
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
@@ -90,21 +101,27 @@ export default function EditProfile() {
     }
 
     const handleImageUpload = (e) => {
-        const file = e.target.files[0]
-        if (file) {
-            if (file.size > 5 * 1024 * 1024) { // 5MB limit
-                toast.error('Image size must be less than 5MB')
-                return
-            }
+        const file = e.target.files?.[0];
+        if (!file) return;
 
-            const reader = new FileReader()
-            reader.onload = (e) => {
-                setProfileImage(e.target.result)
-                setImageFile(file)
-            }
-            reader.readAsDataURL(file)
+        if (!file.type.startsWith('image/')) {
+            toast.error('Invalid image file');
+            return;
         }
-    }
+
+        if (file.size > 5 * 1024 * 1024) {
+            toast.error('Image size must be less than 5MB');
+            return;
+        }
+
+        setImageFile(file); // 🔑 IMPORTANT
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            setProfileImage(reader.result); // preview only
+        };
+        reader.readAsDataURL(file);
+    };
 
     const handleRemoveImage = () => {
         setProfileImage('')
@@ -112,36 +129,43 @@ export default function EditProfile() {
     }
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
-        setLoading(true)
+        e.preventDefault();
+        setLoading(true);
 
         try {
-            // Validate required fields
             if (!formData.name.trim()) {
-                toast.error('Name is required')
-                return
+                toast.error('Name is required');
+                return;
             }
             if (!formData.email.trim()) {
-                toast.error('Email is required')
-                return
+                toast.error('Email is required');
+                return;
             }
+            // console.log("===prefrences===",formData.preferences, user.preferences.workoutTypes)
+            const payload = new FormData();
 
-            // Simulate API call delay
-            await new Promise(resolve => setTimeout(resolve, 1000))
+            // append text fields
+            if (formData.name) payload.append("name", formData.name);
+            if (formData.email) payload.append("email", formData.email);
+            if (imageFile) payload.append("avatar", imageFile); ///====
+            // if (formData.location) payload.append("location", formData.location);
+            
+            // stringify nested objects
+            payload.append("preferences", JSON.stringify(formData.preferences));
+            console.log("====payload====",payload)
+            // // debug for browser console
+            // for (let pair of payload.entries()) {
+            //     console.log("======>>>>>>",pair[0], pair[1]);
+            // }
+            await updateProfile(payload);
 
-            // Update profile data
-            const updatedData = {
-                ...formData,
-                avatar: profileImage
-            }
-
-            updateProfile(updatedData)
-            toast.success('Profile updated successfully!')
-            navigate('/profile')
-        } catch (error) {
-            toast.error('Failed to update profile. Please try again.')
+            toast.success('Profile updated successfully!');
+            navigate('/profile');
+        } catch (err) {
+            console.log(err.message)
+            toast.error('Failed to update profile');
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     }
 
@@ -188,7 +212,7 @@ export default function EditProfile() {
                         <div className="relative">
                             <Avatar
                                 src={profileImage}
-                                alt={formData.name}
+                                alt={formData?.name}
                                 size="2xl"
                             />
                             {profileImage && (
@@ -230,27 +254,47 @@ export default function EditProfile() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Full Name *
+                                Full Name <span className='text-red-500'>*</span>
                             </label>
                             <input
+                                disabled={!!formData?.name}
                                 type="text"
                                 name="name"
-                                value={formData.name}
+                                value={formData?.name}
                                 onChange={handleInputChange}
-                                className="input w-full"
+                                className={`w-full px-3 py-2
+                                    bg-gray-100
+                                    rounded-lg
+                                    text-gray-900 text-sm
+                                    placeholder-gray-400
+
+                                    focus:outline-none
+                                    focus:ring-0
+                                    ${!!formData?.name ? 'cursor-not-allowed' : ''}
+                                    transition`}
                                 required
                             />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Email Address *
+                                Email Address <span className='text-red-500'>*</span>
                             </label>
                             <input
+                                disabled={!!formData?.email}
                                 type="email"
                                 name="email"
-                                value={formData.email}
+                                value={formData?.email}
                                 onChange={handleInputChange}
-                                className="input w-full"
+                                className={`w-full px-3 py-2
+                                    bg-gray-100
+                                    rounded-lg
+                                    text-gray-900 text-sm
+                                    placeholder-gray-400
+
+                                    focus:outline-none
+                                    focus:ring-0
+                                    ${!!formData?.email ? 'cursor-not-allowed' : ''}
+                                    transition`}
                                 required
                             />
                         </div>
@@ -261,11 +305,20 @@ export default function EditProfile() {
                             <input
                                 type="number"
                                 name="age"
-                                value={formData.age}
+                                value={formData?.age}
                                 onChange={handleInputChange}
-                                className="input w-full"
+                                className={`w-full px-3 py-2
+                                    bg-gray-100
+                                    rounded-lg
+                                    text-gray-900 text-sm
+                                    placeholder-gray-400
+
+                                    focus:outline-none
+                                    focus:ring-0
+                                    transition`}
                                 min="13"
                                 max="120"
+                                placeholder='Enter your age'
                             />
                         </div>
                         <div>
@@ -277,9 +330,25 @@ export default function EditProfile() {
                                 <input
                                     type="text"
                                     name="location"
-                                    value={formData.location}
-                                    onChange={handleInputChange}
-                                    className="input w-full pl-10"
+                                    value={formData?.location?.address}
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            location: {
+                                                ...prev.location,
+                                                address: e.target.value
+                                            }
+                                        }))
+                                    }
+                                    className={`w-full px-3 py-2 pl-10
+                                    bg-gray-100
+                                    rounded-lg
+                                    text-gray-900 text-sm
+                                    placeholder-gray-400
+
+                                    focus:outline-none
+                                    focus:ring-0
+                                    transition`}
                                     placeholder="City, State"
                                 />
                             </div>
@@ -291,9 +360,17 @@ export default function EditProfile() {
                             <input
                                 type="text"
                                 name="height"
-                                value={formData.height}
+                                value={formData?.height}
                                 onChange={handleInputChange}
-                                className="input w-full"
+                                className={`w-full px-3 py-2
+                                    bg-gray-100
+                                    rounded-lg
+                                    text-gray-900 text-sm
+                                    placeholder-gray-400
+
+                                    focus:outline-none
+                                    focus:ring-0
+                                    transition`}
                                 placeholder="5'8&quot; or 173 cm"
                             />
                         </div>
@@ -304,9 +381,17 @@ export default function EditProfile() {
                             <input
                                 type="text"
                                 name="weight"
-                                value={formData.weight}
+                                value={formData?.weight}
                                 onChange={handleInputChange}
-                                className="input w-full"
+                                className={`w-full px-3 py-2
+                                    bg-gray-100
+                                    rounded-lg
+                                    text-gray-900 text-sm
+                                    placeholder-gray-400
+
+                                    focus:outline-none
+                                    focus:ring-0
+                                    transition`}
                                 placeholder="150 lbs or 68 kg"
                             />
                         </div>
@@ -317,9 +402,17 @@ export default function EditProfile() {
                         </label>
                         <textarea
                             name="bio"
-                            value={formData.bio}
+                            value={formData?.bio}
                             onChange={handleInputChange}
-                            className="input w-full h-24 resize-none"
+                            className={`w-full h-24 resize-none px-3 py-2
+                                    bg-gray-100
+                                    rounded-lg
+                                    text-gray-900 text-sm
+                                    placeholder-gray-400
+
+                                    focus:outline-none
+                                    focus:ring-0
+                                    transition`}
                             placeholder="Tell others about yourself and your fitness journey..."
                         />
                     </div>
@@ -332,37 +425,60 @@ export default function EditProfile() {
                         Fitness Information
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
+                        <Select
+                            label="Fitness Level"
+                            name="fitnessLevel"
+                            value={formData?.preferences?.fitnessLevel}
+                            options={fitnessLevels}
+                            placeholder="Select fitness level"
+                            onChange={(e) =>
+                                setFormData(prev => ({
+                                    ...prev,
+                                    preferences:{
+                                        ...prev.preferences, 
+                                        fitnessLevel: e.target.value
+                                    }
+                                }))
+                            }
+                        />
+                        {/* <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                 Fitness Level
                             </label>
                             <select
                                 name="fitnessLevel"
-                                value={formData.fitnessLevel}
+                                value={formData?.preferences?.fitnessLevel}
                                 onChange={handleInputChange}
-                                className="input w-full"
+                                className="w-full px-3 py-2 pr-10
+                                    bg-gray-100 rounded-lg
+                                    text-sm text-gray-900
+
+                                    hover:bg-gray-200
+                                    focus:outline-none
+                                    transition
+                                    cursor-pointer"
                             >
                                 {fitnessLevels.map(level => (
-                                    <option key={level.value} value={level.value}>
-                                        {level.label}
+                                    <option key={level?.value} value={level?.value}>
+                                        {level?.label}
                                     </option>
                                 ))}
-                            </select>
-                        </div>
+                            </select>                        
+                        </div> */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                 Workout Frequency
                             </label>
                             <select
                                 name="workoutFrequency"
-                                value={formData.workoutFrequency}
+                                value={formData?.workoutFrequency}
                                 onChange={handleInputChange}
                                 className="input w-full"
                             >
                                 <option value="">Select frequency</option>
                                 {workoutFrequencies.map(freq => (
                                     <option key={freq.value} value={freq.value}>
-                                        {freq.label}
+                                        {freq?.label}
                                     </option>
                                 ))}
                             </select>
@@ -373,14 +489,14 @@ export default function EditProfile() {
                             </label>
                             <select
                                 name="preferredWorkoutTime"
-                                value={formData.preferredWorkoutTime}
+                                value={formData?.preferredWorkoutTime}
                                 onChange={handleInputChange}
                                 className="input w-full"
                             >
                                 <option value="">Select time</option>
                                 {workoutTimes.map(time => (
                                     <option key={time.value} value={time.value}>
-                                        {time.label}
+                                        {time?.label}
                                     </option>
                                 ))}
                             </select>
@@ -392,7 +508,7 @@ export default function EditProfile() {
                             <input
                                 type="text"
                                 name="experience"
-                                value={formData.experience}
+                                value={formData?.experience}
                                 onChange={handleInputChange}
                                 className="input w-full"
                                 placeholder="e.g., 2 years"
@@ -409,7 +525,7 @@ export default function EditProfile() {
                                 <label key={type} className="flex items-center space-x-2 cursor-pointer">
                                     <input
                                         type="checkbox"
-                                        checked={formData.workoutPreferences.includes(type)}
+                                        checked={formData?.workoutPreferences.includes(type)}
                                         onChange={() => handleArrayToggle('workoutPreferences', type)}
                                         className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                                     />
@@ -428,7 +544,7 @@ export default function EditProfile() {
                                 <label key={goal} className="flex items-center space-x-2 cursor-pointer">
                                     <input
                                         type="checkbox"
-                                        checked={formData.fitnessGoals.includes(goal)}
+                                        checked={formData?.fitnessGoals.includes(goal)}
                                         onChange={() => handleArrayToggle('fitnessGoals', goal)}
                                         className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                                     />
@@ -457,7 +573,7 @@ export default function EditProfile() {
                                 <label key={day} className="flex items-center space-x-2 cursor-pointer">
                                     <input
                                         type="checkbox"
-                                        checked={formData.availability.includes(day)}
+                                        checked={formData?.availability.includes(day)}
                                         onChange={() => handleArrayToggle('availability', day)}
                                         className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                                     />
@@ -473,7 +589,7 @@ export default function EditProfile() {
                         </label>
                         <textarea
                             name="injuries"
-                            value={formData.injuries}
+                            value={formData?.injuries}
                             onChange={handleInputChange}
                             className="input w-full h-20 resize-none"
                             placeholder="Any injuries, physical limitations, or health conditions to be aware of..."

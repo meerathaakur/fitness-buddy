@@ -17,4 +17,12 @@ router.get('/:workoutId', workoutController.getWorkout);
 router.put('/:workoutId', workoutController.updateWorkout);
 router.delete('/:workoutId', workoutController.deleteWorkout);
 
+// admin routes
+// router.post('/workout-types', authGuard(['admin','super_admin']), createType);
+// router.put('/workout-types/:id', authGuard(['admin','super_admin']), updateType);
+// router.delete('/workout-types/:id', authGuard(['super_admin']), deleteType);
+
+// router.post('fitness-levels', authGuard(['super_admin']), createFitnessLevel);
+
+
 module.exports = router;
