@@ -153,10 +153,10 @@ export default function EditProfile() {
             // stringify nested objects
             payload.append("preferences", JSON.stringify(formData.preferences));
             console.log("====payload====",payload)
-            // debug for browser console
-            for (let pair of payload.entries()) {
-                console.log("======>>>>>>",pair[0], pair[1]);
-            }
+            // // debug for browser console
+            // for (let pair of payload.entries()) {
+            //     console.log("======>>>>>>",pair[0], pair[1]);
+            // }
             await updateProfile(payload);
 
             toast.success('Profile updated successfully!');
