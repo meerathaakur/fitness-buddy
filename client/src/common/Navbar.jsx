@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Bell, Search, User, Settings, LogOut, MessageCircle, Users, Trophy, Calendar } from 'lucide-react'
-import { useAuth } from '../../hooks/useAuth'
+import { useAuth } from '../hooks/useAuth'
 import Avatar from './Avatar'
 import webLogo from '/fitness.png'
 
