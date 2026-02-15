@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronRight, ChevronLeft } from 'lucide-react'
-import Button from '../components/common/Button'
-import Card from '../components/common/Card'
+import Button from '../common/Button'
+import Card from '../common/Card'
 import { useAuth } from '../hooks/useAuth'
-import { toast } from '../components/common/Toast'
+import { toast } from '../common/Toast'
 
 // update it later for admin control
 const steps = [

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Users, Target, Trophy, MessageCircle } from 'lucide-react'
-import Button from '../components/common/Button'
+import Button from '../common/Button'
 
 import bgImage from '../assets/image16.jpg'
 

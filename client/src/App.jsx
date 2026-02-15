@@ -1,10 +1,10 @@
 import React from 'react'
-import { AuthProvider } from './contexts/AuthContext'
-import { WorkoutProvider } from './contexts/WorkoutContext'
-import { NotificationProvider } from './contexts/NotificationContext'
+import { AuthProvider } from './module/auth/AuthContext'
+import { WorkoutProvider } from './module/workouts/WorkoutContext'
 import AppRouter from './router/AppRouter'
-import Toast from './components/common/Toast'
-import { BuddyProvider } from './contexts/BuddiesContext'
+import { NotificationProvider } from './module/notifications/NotificationContext'
+import Toast from './common/Toast'
+import { BuddyProvider } from './module/buddies/BuddiesContext'
 
 function App() {
   return (
