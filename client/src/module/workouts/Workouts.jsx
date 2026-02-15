@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 import { Plus, Calendar, Clock, Flame, TrendingUp, Filter, Search } from 'lucide-react'
 import Button from '../../common/Button'
 import Card from '../../common/Card'
-import { useAuth } from '../../hooks/useAuth'
 import PageHeader from '../../common/PageHeader'
+import { useAuth } from '../auth/useAuth'
 import { useWorkout } from './useWorkout'
 
 // Mock workout data

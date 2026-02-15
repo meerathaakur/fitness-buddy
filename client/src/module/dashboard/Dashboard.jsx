@@ -15,8 +15,8 @@ import {
 import Card from '../../common/Card'
 import Button from '../../common/Button'
 import Avatar from '../../common/Avatar'
-import { useAuth } from '../../hooks/useAuth'
 import { PageLoader } from '../../common/Loader'
+import { useAuth } from '../auth/useAuth'
 
 
 

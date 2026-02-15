@@ -3,8 +3,8 @@ import { Save, Bell, Shield, User, Palette, Globe, Smartphone, Mail, Lock, Eye, 
 import Card from '../../common/Card'
 import Button from '../../common/Button'
 import PageHeader from '../../common/PageHeader'
-import { useAuth } from '../../hooks/useAuth'
 import { toast } from '../../common/Toast'
+import { useAuth } from '../auth/useAuth'
 
 // mock or static data
     const tabs = [
