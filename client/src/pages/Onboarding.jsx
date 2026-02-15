@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { ChevronRight, ChevronLeft } from 'lucide-react'
 import Button from '../common/Button'
 import Card from '../common/Card'
-import { useAuth } from '../hooks/useAuth'
+import { useAuth } from '../module/auth/useAuth'
 import { toast } from '../common/Toast'
 
 // update it later for admin control
