@@ -19,6 +19,10 @@ router.get("/google", passport.authenticate("google", { scope: ["profile", "emai
 router.get("/google/callback",
     passport.authenticate("google", { session: false }),
     (req, res) => {
+        console.log("User:", req.user) // Debugging line to check the user object
+        if (!req.user) {
+            return res.status(400).json({ error: "User not found" })
+        }
         const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, { expiresIn: "7d" })
         res.redirect(`${process.env.CLIENT_URL}/auth/callback?token=${token}`)
     }
