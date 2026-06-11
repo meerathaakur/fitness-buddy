@@ -4,6 +4,7 @@ import { toast } from '../../common/Toast'
 import Button from '../../common/Button'
 import Avatar from '../../common/Avatar'
 import Badge from '../../common/Badge'
+import { useBuddy } from './useBuddy'
 
 export default function BuddyCard({ 
   buddy, 
@@ -13,12 +14,17 @@ export default function BuddyCard({
   showMessageButton = true,
   variant = 'default' // 'default', 'compact', 'detailed'
 }) {
-  const handleConnect = () => {
+
+  const {sendBuddyRequest} = useBuddy()
+
+  const handleConnect = async() => {
+    await sendBuddyRequest(buddy.id) // Send connection request to backend
     onConnect?.(buddy.id, buddy.name)
     toast.success(`Connection request sent to ${buddy.name}!`)
   }
 
-  const handleMessage = () => {
+  const handleMessage = async() => {
+    await sendBuddyRequest(buddy.id) // Ensure they are connected before messaging
     onMessage?.(buddy.id, buddy.name)
     toast.info(`Opening chat with ${buddy.name}...`)
   }

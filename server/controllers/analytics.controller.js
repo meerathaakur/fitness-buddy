@@ -46,9 +46,10 @@ exports.getUserAnalytics = async (req, res) => {
             }
             analytics.workouts.byType[workout.type]++;
         });
-
+        console.log("analytics data fetched >>>", analytics)
         res.json(analytics);
     } catch (error) {
+        console.log("Error fetching analytics >>>", error)
         res.status(500).json({ error: error.message });
     }
 };

@@ -31,7 +31,8 @@ const httpServer = createServer(app);
 // allowed origins for CORS
 const allowedOrigins = [
     "http://localhost:3000",
-    "https://fitness-buddy-five.vercel.app"
+    "https://fitness-buddy-five.vercel.app",
+    "https://accounts.google.com"
 ];
 
 // Configure Socket.IO
@@ -71,6 +72,7 @@ app.use(cors({
     allowedHeaders: ["Content-Type", "Authorization"],  // 👈 useful if sending tokens
     credentials: true,
 }));
+// app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));

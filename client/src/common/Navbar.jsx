@@ -12,53 +12,53 @@ export default function Navbar() {
 
   // Mock notifications data
   const notifications = [
-    {
-      id: 1,
-      type: 'buddy_request',
-      title: 'New Buddy Request',
-      message: 'Sarah Johnson wants to connect with you',
-      time: '5 minutes ago',
-      unread: true,
-      avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=400',
-      icon: Users
-    },
-    {
-      id: 2,
-      type: 'workout_reminder',
-      title: 'Workout Reminder',
-      message: 'Your scheduled workout with Mike starts in 30 minutes',
-      time: '25 minutes ago',
-      unread: true,
-      icon: Calendar
-    },
-    {
-      id: 3,
-      type: 'challenge_update',
-      title: 'Challenge Update',
-      message: 'You moved up to 5th place in the 30-Day Push-Up Challenge!',
-      time: '2 hours ago',
-      unread: false,
-      icon: Trophy
-    },
-    {
-      id: 4,
-      type: 'message',
-      title: 'New Message',
-      message: 'Emma: "Great workout today! Same time tomorrow?"',
-      time: '4 hours ago',
-      unread: false,
-      avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400',
-      icon: MessageCircle
-    },
-    {
-      id: 5,
-      type: 'goal_milestone',
-      title: 'Goal Milestone',
-      message: 'Congratulations! You\'re 80% towards your weight loss goal',
-      time: '1 day ago',
-      unread: false,
-      icon: Trophy
-    }
+    // {
+    //   id: 1,
+    //   type: 'buddy_request',
+    //   title: 'New Buddy Request',
+    //   message: 'Sarah Johnson wants to connect with you',
+    //   time: '5 minutes ago',
+    //   unread: true,
+    //   avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=400',
+    //   icon: Users
+    // },
+    // {
+    //   id: 2,
+    //   type: 'workout_reminder',
+    //   title: 'Workout Reminder',
+    //   message: 'Your scheduled workout with Mike starts in 30 minutes',
+    //   time: '25 minutes ago',
+    //   unread: true,
+    //   icon: Calendar
+    // },
+    // {
+    //   id: 3,
+    //   type: 'challenge_update',
+    //   title: 'Challenge Update',
+    //   message: 'You moved up to 5th place in the 30-Day Push-Up Challenge!',
+    //   time: '2 hours ago',
+    //   unread: false,
+    //   icon: Trophy
+    // },
+    // {
+    //   id: 4,
+    //   type: 'message',
+    //   title: 'New Message',
+    //   message: 'Emma: "Great workout today! Same time tomorrow?"',
+    //   time: '4 hours ago',
+    //   unread: false,
+    //   avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400',
+    //   icon: MessageCircle
+    // },
+    // {
+    //   id: 5,
+    //   type: 'goal_milestone',
+    //   title: 'Goal Milestone',
+    //   message: 'Congratulations! You\'re 80% towards your weight loss goal',
+    //   time: '1 day ago',
+    //   unread: false,
+    //   icon: Trophy
+    // }
   ]
 
   const handleLogout=()=>{

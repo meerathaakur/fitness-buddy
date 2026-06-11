@@ -15,12 +15,14 @@ exports.authenticate = async (req, res, next) => {
         const user = await User.findById(decoded.id);
         
         if (!user) {
+            console.log("User not found for token:", decoded.id);
             return res.status(401).json({ error: 'Invalid token.' });
         }
 
         req.user = user;
         next();
     } catch (error) {
+        console.log("Authentication error:", error);
         res.status(401).json({ error: 'Invalid token.' });
     }
 };

@@ -1,4 +1,4 @@
-import { createContext, useState } from "react"
+import { createContext, useEffect, useState } from "react"
 import { 
     findBuddyAPI,
     responseToBuddyRequestAPI,
@@ -36,6 +36,10 @@ export const BuddyProvider = ({ children }) => {
             status: 'pending'
         }
     ])
+
+    useEffect(() =>{
+        setToken(getStoredToken())
+    },[buddies])
 
     const findBuddy=async(workoutType, fitnessLevel, maxDistance=20)=>{ // workoutType=cardio, fitnessLevel=advanced, maxDistance=20
         try {
@@ -87,7 +91,7 @@ export const BuddyProvider = ({ children }) => {
                 headers:{
                     Authorization: `Bearer ${token}`
                 },
-                body: recipientId
+                body: JSON.stringify({recipientId})
             })
             if(!response.ok){
                 return { success: response.ok }
@@ -107,7 +111,7 @@ export const BuddyProvider = ({ children }) => {
                 headers:{
                     Authorization: `Bearer ${token}`
                 },
-                body: action
+                body: JSON.stringify({action})
             })
             if(!response.ok){
                 return { success: response.ok }

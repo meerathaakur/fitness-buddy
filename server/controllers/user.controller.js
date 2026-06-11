@@ -6,8 +6,10 @@ const { uploadToCloudinary } = require('../utils/cloudinary');
 exports.getProfile = async (req, res) => {
     try {
         const user = await User.findById(req.user._id).populate('buddies', 'name avatar');
+        console.log("user data fetched getProfile >>>", user)
         res.status(200).json({success:true,user});
     } catch (error) {
+        console
         res.status(500).json({success:false, error: error.message });
     }
 };
@@ -35,9 +37,10 @@ exports.updateProfile = async (req, res) => { // make changes can cause error us
             updates,
             { new: true, runValidators: true }
         );
-
+        console
         res.status(200).json({success:true,message:"profile updated sucessfully",user});
     } catch (error) {
+        console.log("Error in updateProfile >>>", error);
         res.status(500).json({success:false, error: error.message });
     }
 };
@@ -45,15 +48,16 @@ exports.updateProfile = async (req, res) => { // make changes can cause error us
 exports.updatePreferences = async (req, res) => {
     try {
         const updatedPreferences = req.body;
-        console.log(updatedPreferences);
+        console.log("updatedPreferences:::", updatedPreferences);
         const user = await User.findByIdAndUpdate(
             req.user._id,
             { $set: { preferences: updatedPreferences.preferences } },
             { new: true }
         );
-
+        console.log("user preferences updated >>>", user.preferences);
         res.status(200).json({success:true,preferences:user.preferences});
     } catch (error) {
+        console.log("Error in updatePreferences >>>", error);
         res.status(500).json({success:false, error: error.message });
     }
 };
@@ -73,9 +77,10 @@ exports.updateLocation = async (req, res) => {
             },
             { new: true }
         );
-
+        console.log("user location updated >>>", user.location);
         res.status(200).json({success:true, message: 'Location updated successfully', location: user.location });
     } catch (error) {
+        console.log("Error in updateLocation >>>", error);
         res.status(500).json({success:false, error: error.message });
     }
 };

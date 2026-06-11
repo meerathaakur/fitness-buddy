@@ -1,3 +1,5 @@
+import axios from "axios";
+
 // const BASE_URL = "https://fitness-buddy-9o01.onrender.com";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 console.log("BASE API", BASE_URL)
@@ -8,6 +10,13 @@ export const loginAPI = `${BASE_URL}/auth/login`;
 export const verifyEmailAPI = `${BASE_URL}/auth/verify-email`;
 export const forgotPasswordAPI = `${BASE_URL}/auth/forgot-password`;
 export const resetPasswordAPI = `${BASE_URL}/auth/reset-password`;
+// export const googleAuthAPI = `${BASE_URL}/auth/google`;
+const api = axios.create({
+    baseURL: `${BASE_URL}/auth/`,
+    // withCredentials: true,
+});
+
+export const googleAuthAPI = (code) => api.get(`/google?code=${code}`);
 
 // buddies API
 export const findBuddyAPI = `${BASE_URL}/buddies/find`;

@@ -23,7 +23,8 @@ module.exports = (passport) => {
                     socialLogin: {
                         provider: 'google',
                         providerId: profile.id
-                    }
+                    },
+                    // emailVerified: true,
                 });
             }
             

@@ -42,8 +42,8 @@ export default function Dashboard() {
   })
   
   useEffect(() => {
-    async function fetchUserAnalysisData() {
-      const data = await getUserAnalysisData()
+    async function fetchUserAnalysisData(period='30') {
+      const data = await getUserAnalysisData(period)
       console.log(data)
       setGoal((prev) => ({ ...prev, ...data?.goals }));
       setStreak((prev) => ({ ...prev, ...data?.streaks }));
