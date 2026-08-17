@@ -12,7 +12,9 @@ module.exports = (passport) => {
         scope:['profile','email']
     }, async (accessToken, refreshToken, profile, done) => {
         try {
-            console.log("Google Profile:", profile) // Debugging line to check the profile object
+            console.log("Google Profile:- 15", profile) // Debugging line to check the profile object
+            console.log("accessToken:- 16", accessToken) // Debugging line to check the accessToken
+            console.log("refreshToken:- 17", refreshToken) // Debugging line to check the refreshToken
             let user = await User.findOne({ 'socialLogin.providerId': profile.id });
             
             if (!user) {

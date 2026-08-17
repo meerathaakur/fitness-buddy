@@ -17,6 +17,7 @@ exports.authenticate = async (req, res, next) => {
         if (!user) {
             console.log("User not found for token:", decoded.id);
             return res.status(401).json({ error: 'Invalid token.' });
+            
         }
 
         req.user = user;

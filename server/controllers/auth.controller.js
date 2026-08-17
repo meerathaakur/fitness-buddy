@@ -9,7 +9,7 @@ const axios = require('axios');
 
 const generateToken = (id, role = 'user') => {
     return jwt.sign({ id, role }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_IN || 3600
+        expiresIn: process.env.JWT_EXPIRES_IN || "7d"
     });
 };
 
@@ -23,6 +23,7 @@ exports.register = async (req, res) => {
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
+            console.log("User already exists with email:", email);
             return res.status(400).json({ success: false, error: 'User already exists' });
         }
 

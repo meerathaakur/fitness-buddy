@@ -15,9 +15,9 @@ const Input = forwardRef(({
 }, ref) => {
     const baseClasses = `
     w-full px-3 py-2 border rounded-lg transition-colors
-    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+    focus:outline-none focus:border-transparent
     disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed
-    ${error ? 'border-red-300 focus:ring-red-500' : 'border-gray-300'}
+    ${error ? 'border border-red-300 focus:ring-red-500' : 'border-gray-300'}
     ${leftIcon ? 'pl-10' : ''}
     ${rightIcon ? 'pr-10' : ''}
   `
@@ -31,7 +31,7 @@ const Input = forwardRef(({
                 </label>
             )}
 
-            <div className="relative">
+            <div className="relative bg-white rounded-lg">
                 {leftIcon && (
                     <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
                         {leftIcon}

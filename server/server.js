@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const helmet = require('helmet');
 const morgan = require('morgan');
 const passport = require('passport');
 const { createServer } = require('http');
@@ -32,7 +31,8 @@ const httpServer = createServer(app);
 const allowedOrigins = [
     "http://localhost:3000",
     "https://fitness-buddy-five.vercel.app",
-    "https://accounts.google.com"
+    "https://accounts.google.com",
+    "https://oauth2.googleapis.com"
 ];
 
 // Configure Socket.IO
@@ -59,7 +59,6 @@ SocketHandlers.init(io);
 Scheduler.init();
 
 // Middlewares
-app.use(helmet());
 app.use(cors({
     origin: (origin, callback) => {
         if (!origin || allowedOrigins.includes(origin)) {

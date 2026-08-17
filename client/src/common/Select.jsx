@@ -15,9 +15,9 @@ const Select = forwardRef(({
 }, ref) => {
   const baseClasses = `
     w-full px-3 py-2 pr-10 border rounded-lg transition-colors appearance-none
-    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+    focus:outline-none focus:border-transparent
     disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed
-    ${error ? 'border-red-300 focus:ring-red-500' : 'border-gray-300'}
+    ${error ? 'border border-red-300 focus:ring-red-500' : 'border-gray-300'}
   `
 
   return (
@@ -29,7 +29,7 @@ const Select = forwardRef(({
         </label>
       )}
       
-      <div className="relative">
+      <div className="relative bg-white rounded-lg">
         <select
           ref={ref}
           disabled={disabled}

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, Users, Target, Trophy, MessageCircle } from 'lucide-react'
 import Button from '../common/Button'
 
-import bgImage from '../assets/image16.jpg'
+import bgImage from '../assets/image1.jpg'
 
 export default function Home() {
   const features = [
@@ -30,15 +30,22 @@ export default function Home() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 bg-center bg-cover bg-no-repeat"
-      style={{ backgroundImage: `url(${bgImage})` }}
+    <div className="min-h-screen 
+    bg-linear-to-br 
+    from-primary-50 
+    to-primary-100 
+    bg-center 
+    bg-cover 
+    bg-no-repeat"
+      style={{ backgroundImage: `url(${bgImage})` }} 
+      
     >
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="text-center">
             <h1 className="text-5xl md:text-6xl font-bold mb-6
-            text-4xl font-bold text-cyan-100" style={{ textShadow: "1px 1px 1px cyan, 0 0 50px blue, 0 0 1px red" }}>
+            text-cyan-100" style={{ textShadow: "1px 1px 1px cyan, 0 0 50px blue, 0 0 1px red" }}>
               Find Your Perfect Workout Partner
             </h1>
             <p className="text-xl text-gray-100 mb-8 max-w-3xl mx-auto">
@@ -112,7 +119,7 @@ export default function Home() {
           </p>
           <Link to="/auth/register">
             <Button variant="secondary" size="lg">
-              Join FitnessBuddy Today
+              Join Fitness Buddy Today
             </Button>
           </Link>
         </div>

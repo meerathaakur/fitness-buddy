@@ -12,7 +12,7 @@ export default function Button({
 
   const variants = {
     primary: 'cursor-pointer bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
-    secondary: 'cursor-pointer bg-black text-white hover:bg-gray-900 focus:ring-gray-800',
+    secondary: 'cursor-pointer bg-black border border-gray-900 text-white hover:bg-gray-900 focus:ring-gray-800',
     outline:
       'cursor-pointer border-2 border-white bg-white text-gray-800 hover:bg-blue-500 hover:text-white hover:border-blue-500 focus:ring-blue-500',
     ghost:
@@ -28,7 +28,11 @@ export default function Button({
 
   return (
     <button
-      className={`${baseClasses} ${variants[variant]} ${sizes[size]} ${className}`}
+      className={`
+        ${baseClasses} 
+        ${variants[variant]} 
+        ${sizes[size]} 
+        ${className}`}
       disabled={disabled}
       {...props}
     >
