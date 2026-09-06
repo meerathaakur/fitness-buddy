@@ -98,6 +98,7 @@ exports.verifyEmail = async (req, res) => {
             otp,
             type: 'email_verification',
             isUsed: false,
+            isActive: true,
             expiresAt: { $gt: new Date() }
         });
 
@@ -188,6 +189,7 @@ exports.googleLogin = async (req, res) => {
                 email,
                 role: 'user',
                 avatar: picture,
+                isActive: true,
             });
         }
         // const { _id, role } = user;
