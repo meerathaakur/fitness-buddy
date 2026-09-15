@@ -36,6 +36,7 @@ export default function Home() {
     to-primary-100 
     bg-center 
     bg-cover 
+    bg-fixed
     bg-no-repeat"
       style={{ backgroundImage: `url(${bgImage})` }} 
       

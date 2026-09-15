@@ -10,3 +10,17 @@ Currently, two official plugins are available:
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+
+```
+✅ Day 1 – Project setup
+🟨 Day 2 – Authentication (In Progress)
+⬜ Day 3 – Profile completion & dashboard
+⬜ Day 4 – Workout CRUD
+⬜ Day 5 – Exercise library
+⬜ Day 6 – Nutrition tracker
+⬜ Day 7 – Buddy Finder
+⬜ Day 8 – Real-time chat
+⬜ Day 9 – Analytics dashboard
+⬜ Day 10 – Deployment & portfolio polish
+```
