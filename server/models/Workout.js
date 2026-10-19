@@ -22,6 +22,10 @@ const workoutSchema = new mongoose.Schema({
         enum: ['yoga', 'strength', 'cardio', 'running', 'weightlifting', 'swimming', 'cycling', 'pilates', 'crossfit', 'boxing', 'dancing', 'hiking', 'other'],
         required: true
     },
+    isCompleted: {
+        type: Boolean,
+        default: false
+    },
 
     duration: {
         type: Number, // minutes
