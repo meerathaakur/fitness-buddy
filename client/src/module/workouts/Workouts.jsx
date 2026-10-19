@@ -87,7 +87,16 @@ export default function Workouts() {
     { value: 'strength', label: 'Strength' },
     { value: 'cardio', label: 'Cardio' },
     { value: 'yoga', label: 'Yoga' },
-    { value: 'pilates', label: 'Pilates' }
+    { value: 'pilates', label: 'Pilates' },
+    { value: 'cycling', label: 'Cycling' },
+    { value: 'crossfit', label: 'CrossFit' },
+    { value: 'weightlifting', label: 'Weightlifting' },
+    { value: 'boxing', label: 'Boxing' },
+    { value: 'swimming', label: 'Swimming' },
+    { value: 'dancing', label: 'Dancing' },
+    { value: 'hiking', label: 'Hiking' },
+    { value: 'other', label: 'Other' }
+
   ]
 
   const filteredWorkouts = workouts.filter(workout => {
