@@ -92,7 +92,7 @@ export default function BuddyMatch({
         
         {/* Match Percentage Overlay */}
         <div className="absolute top-4 right-4">
-          <div className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-3 py-1 rounded-full text-sm font-bold">
+          <div className="bg-linear-to-r from-pink-500 to-purple-600 text-white px-3 py-1 rounded-full text-sm font-bold">
             {buddy.matchPercentage}% Match
           </div>
         </div>
@@ -177,7 +177,7 @@ export default function BuddyMatch({
 
         {/* Match Details */}
         {showMatchDetails && matchReasons.length > 0 && (
-          <div className="mb-4 p-3 bg-gradient-to-r from-pink-50 to-purple-50 rounded-lg border border-pink-200">
+          <div className="mb-4 p-3 bg-linear-to-r from-pink-50 to-purple-50 rounded-lg border border-pink-200">
             <div className="flex items-center mb-2">
               <Zap className="w-4 h-4 text-pink-600 mr-2" />
               <h4 className="text-sm font-medium text-pink-900">Why you match</h4>
@@ -244,7 +244,7 @@ export default function BuddyMatch({
             size="lg"
             onClick={handleLike}
             disabled={isPassing || isLiking}
-            className="w-14 h-14 rounded-full bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 p-0"
+            className="w-14 h-14 rounded-full bg-linear-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 p-0"
           >
             <Heart className="w-6 h-6 text-white" />
           </Button>

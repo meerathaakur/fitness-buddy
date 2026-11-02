@@ -50,7 +50,13 @@ export const AuthProvider = ({ children }) => {
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
         console.log("Backend error:", errorData);
-        throw new Error(errorData.message || "Invalid token");
+        // ✅ only treat actual auth failures as "invalid token"
+        if (res.status === 401 || res.status === 403) {
+          throw new Error("Invalid token")
+        }
+        // any other failure (500, network, cold start, etc) — don't log out
+        console.error("fetchProfile failed with status:", res.status)
+        return
       }
 
       const data = await res.json()
@@ -70,15 +76,18 @@ export const AuthProvider = ({ children }) => {
 
   /* ---------------- HELPERS ---------------- */
   const persistToken = (token, rememberMe) => {
-    // rememberMe ? sessionStorage.setItem('token', token) :
-    localStorage.setItem('token', token)
+    if (rememberMe) {
+      localStorage.setItem('token', token)
+    } else {
+      sessionStorage.setItem('token', token)
+    }
     setToken(token)
   }
 
   const clearSession = () => {
     localStorage.removeItem('token')
     sessionStorage.removeItem('token')
-    // setToken(null)
+    setToken(null)
     setUser(null)
   }
 

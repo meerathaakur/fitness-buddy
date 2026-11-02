@@ -11,12 +11,12 @@ function App() {
     <NotificationProvider>
       <AuthProvider>
         <BuddyProvider>
-          <WorkoutProvider>
-            <main className="flex-grow mx-auto">
+          {/* <WorkoutProvider> */}
+            <main className="grow mx-auto">
               <AppRouter />
             </main>
             <Toast />
-          </WorkoutProvider>
+          {/* </WorkoutProvider> */}
         </BuddyProvider>
       </AuthProvider>
     </NotificationProvider>

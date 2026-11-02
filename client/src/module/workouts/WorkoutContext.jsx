@@ -14,6 +14,7 @@ import {
   // sendBuddyRequestAPI,
   // responseToBuddyRequestAPI
 } from '../../api/all.api.js'
+import { useCallback } from 'react'
 
 const WorkoutContext = createContext()
 
@@ -22,6 +23,8 @@ const getStoredToken = () => localStorage.getItem('token') || sessionStorage.get
 export const WorkoutProvider = ({ children }) => {
   const [workouts, setWorkouts] = useState([])
   const [token, setToken] = useState(getStoredToken())
+  const [loading, setLoading] = useState(false)
+  const [initialized, setInitialized] = useState(false)
 
   const [goals, setGoals] = useState([
     {
@@ -71,6 +74,21 @@ export const WorkoutProvider = ({ children }) => {
     }
   ])
 
+  // loading initial data
+  const loadInitialData = useCallback(async () => {
+    if (!token) return
+    setLoading(true)
+    try {
+      await Promise.all([
+        getUserWorkouts(),
+        getWeeklyAnalytics()
+      ])
+      setInitialized(true)
+    } finally {
+      setLoading(false)
+    }
+  }, [token])
+
   // -----WORKOUT API CALLS------
   // workoutData -->{title, images, duration, type, caloriesBurned, intensity, location, buddies, images, isPublic, exercises, workoutDate}
   const addWorkout = async (workoutData) => {
@@ -83,14 +101,15 @@ export const WorkoutProvider = ({ children }) => {
         },
         body: JSON.stringify(workoutData)
       })
+      console.log("addWorkout response:::", response)
       if (!response.ok) {
         return { success: response.ok }
       }
 
       const data = await response.json()
-      console.log("addWorkout:::",data)
+      console.log("addWorkout:::", data)
       // setWorkouts()
-      return data; //{ success: response.ok, data: data }
+      return data; // it returns data like this { success: response.ok, data: data }
     } catch (error) {
       return { success: false, error: error.message }
     }
@@ -133,7 +152,7 @@ export const WorkoutProvider = ({ children }) => {
       }
 
       const data = await response.json()
-      console.log("data:::",data)
+      console.log("data:::", data)
       return data
     } catch (error) {
       return { success: false, error: error.message }
@@ -245,8 +264,8 @@ export const WorkoutProvider = ({ children }) => {
       if (!response.ok) {
         return { success: false, status: response.status }
       }
-      
-      return { success: true, message:"Workout deleted successfully" }
+
+      return { success: true, message: "Workout deleted successfully" }
     } catch (error) {
       return { success: false, error: error.message }
 
@@ -297,7 +316,10 @@ export const WorkoutProvider = ({ children }) => {
     updateWorkout,
     deleteWorkout,
     addGoal,
-
+    // ADD THESE THREE:
+    loadInitialData,
+    initialized,
+    loading,
   }
 
   return (

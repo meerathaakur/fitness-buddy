@@ -53,7 +53,7 @@ export default function SocialAuth({ mode = 'login' }) {
           <div className="w-full border-t border-gray-300" />
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="px-2 bg-white text-gray-500">Or continue with</span>
+          <span className="px-2 text-gray-500">Or continue with</span>
         </div>
       </div>
 
@@ -61,7 +61,7 @@ export default function SocialAuth({ mode = 'login' }) {
         <Button
           fullWidth
           onClick={googleLogin}
-          className="!text-gray-700 w-full flex items-center justify-center space-x-2"
+          className="text-gray-700! w-full flex items-center justify-center space-x-2"
           sx={{
             textTransform: "none",
             fontWeight: 500,

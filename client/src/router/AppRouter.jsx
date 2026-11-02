@@ -29,6 +29,7 @@ import NotFound from '../pages/NotFound'
 import { RequireAuth, RequireGuest } from './guards'
 import { BuddyRoutes } from '../module/buddies/BuddyRoutes'
 import { GoogleOAuthProvider } from '@react-oauth/google'
+import WorkoutWrapper from '../module/workouts/WorkoutWrapper'
 
 
 export default function AppRouter() {
@@ -53,26 +54,28 @@ export default function AppRouter() {
                     {/* components and pages */}
                     <Route element={<MainLayout />}>
                         <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/profile" element={<Profile />} />
-                        <Route path="/profile/edit" element={<EditProfile />} />
-                        <Route path="/settings" element={<Settings />} />
-                        <Route path="/workouts" element={<Workouts />} />
-                        {/* <Route path="/workouts/:id" element={<WorkoutDetail />} /> */}
-                        {/* <Route path="/workout-library" element={<WorkoutLibrary />} /> */}
+                        {/* <Route path="/profile" element={<Profile />} /> */}
+                        {/* <Route path="/profile/edit" element={<EditProfile />} /> */}
+                        {/* <Route path="/settings" element={<Settings />} /> */}
+                        <Route element={<WorkoutWrapper />}>
+                            <Route path="/workouts" element={<Workouts />} />
+                            <Route path="/workouts/:id" element={<WorkoutDetail />} />
+                            <Route path="/workout-library" element={<WorkoutLibrary />} />
+                        </Route>
                         {/* <Route path="/buddies" element={<BuddyFinder />} /> */}
                         {/* <Route path="/my-buddies" element={<MyBuddies />} /> */}
                         {BuddyRoutes}
-                        <Route path="/messages" element={<Messages />} />
-                        <Route path="/goals" element={<Goals />} />
-                        <Route path="/challenges" element={<Challenges />} />
-                        <Route path="/challenges/:id" element={<ChallengeDetail />} />
-                        <Route path="/challenges/:id/leaderboard" element={<ChallengeLeaderboard />} />
-                        <Route path="/notifications" element={<Notifications />} />
+                        {/* <Route path="/messages" element={<Messages />} /> */}
+                        {/* <Route path="/goals" element={<Goals />} /> */}
+                        {/* <Route path="/challenges" element={<Challenges />} /> */}
+                        {/* <Route path="/challenges/:id" element={<ChallengeDetail />} /> */}
+                        {/* <Route path="/challenges/:id/leaderboard" element={<ChallengeLeaderboard />} /> */}
+                        {/* <Route path="/notifications" element={<Notifications />} /> */}
                     </Route>
                     {/* Onboarding */}
-                    <Route path="/onboarding" element={<OnboardingLayout />}>
+                    {/* <Route path="/onboarding" element={<OnboardingLayout />}>
                         <Route index element={<Onboarding />} />
-                    </Route>
+                    </Route> */}
                 </Route>
 
                 {/* 404 */}

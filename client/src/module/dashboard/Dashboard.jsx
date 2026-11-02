@@ -41,17 +41,17 @@ export default function Dashboard() {
     totalDuration: 0
   })
   
-  useEffect(() => {
-    async function fetchUserAnalysisData(period='30') {
-      const data = await getUserAnalysisData(period)
-      console.log(data)
-      setGoal((prev) => ({ ...prev, ...data?.goals }));
-      setStreak((prev) => ({ ...prev, ...data?.streaks }));
-      setWorkOut((prev) => ({ ...prev, ...data?.workouts }));
-      setWeeklyProgress(data?.weeklyProgress || []);
-    }
-    fetchUserAnalysisData()
-  }, [token])
+  // useEffect(() => {
+  //   async function fetchUserAnalysisData(period='30') {
+  //     const data = await getUserAnalysisData(period)
+  //     console.log(data)
+  //     setGoal((prev) => ({ ...prev, ...data?.goals }));
+  //     setStreak((prev) => ({ ...prev, ...data?.streaks }));
+  //     setWorkOut((prev) => ({ ...prev, ...data?.workouts }));
+  //     setWeeklyProgress(data?.weeklyProgress || []);
+  //   }
+  //   fetchUserAnalysisData()
+  // }, [token])
 
 
 
@@ -78,7 +78,7 @@ export default function Dashboard() {
       </div>
       <div>
         {/* Streaks */}
-        <Card className="p-4 flex flex-col items-center">
+        {/* <Card className="p-4 flex flex-col items-center">
           <div className='flex'>
             <h2 className="text-lg md:text-xl lg:text-xl font-semibold mr-2">Streaks</h2>
             <Zap className="w-8 h-8 text-yellow-500 ml-2" />
@@ -87,13 +87,13 @@ export default function Dashboard() {
             <p className="text-blue-800 font-semibold">Current: {streak.current} 🔥</p>
             <p className="text-yellow-700 font-semibold">Max: {streak.max} 🏆</p>
           </div>
-        </Card>
+        </Card> */}
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
         {/* Workouts */}
-        <Card className="p-4 flex flex-col items-center ">
+        {/* <Card className="p-4 flex flex-col items-center ">
           <Dumbbell className="w-8 h-8 text-blue-600 mb-2" />
           <h2 className="text-lg md:text-xl lg:text-xl font-semibold text-blue-700">Workouts</h2>
           <div className='w-full'>
@@ -111,10 +111,10 @@ export default function Dashboard() {
               </div>
             )}
           </div>
-        </Card>
+        </Card> */}
 
         {/* Goals */}
-        <Card className="p-4 flex flex-col items-center">
+        {/* <Card className="p-4 flex flex-col items-center">
           <Target className="w-8 h-8 text-green-600 mb-2" />
           <h2 className="text-lg md:text-xl lg:text-xl font-semibold text-green-700">Goals</h2>
           <div className='w-full'>
@@ -125,7 +125,7 @@ export default function Dashboard() {
               Completion Rate: {goal.completionRate}%
             </p>
           </div>
-        </Card>
+        </Card> */}
       </div>
 
       {/* Weekly Progress */}
@@ -136,6 +136,7 @@ export default function Dashboard() {
         </div>
 
         <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          YO YO This is your dashboard. Here you can see your weekly progress, goals, and workouts. Keep pushing forward and stay consistent with your fitness journey!
           {weeklyProgress.map((week, i) => (
             <li
               key={i}
@@ -155,7 +156,7 @@ export default function Dashboard() {
               </p>
 
               {/* Week Stats */}
-              <div className="space-y-1 text-sm">
+              {/* <div className="space-y-1 text-sm">
                 {Object.entries(week).map(
                   ([key, value]) =>
                     key !== 'week' && (
@@ -172,7 +173,7 @@ export default function Dashboard() {
                       </div>
                     )
                 )}
-              </div>
+              </div> */}
             </li>
           ))}
         </ul>

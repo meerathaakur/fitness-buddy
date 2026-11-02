@@ -12,9 +12,9 @@ export default function RegisterForm() {
     name: '',
     email: '',
     password: '',
-    confirmPassword: '',
-    location: '',
-    fitnessLevel: 'beginner'
+    // confirmPassword: '',
+    // location: '',
+    // fitnessLevel: 'beginner'
   })
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -31,10 +31,10 @@ export default function RegisterForm() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     
-    if (formData.password !== formData.confirmPassword) {
-      toast.error('Passwords do not match')
-      return
-    }
+    // if (formData.password !== formData.confirmPassword) {
+    //   toast.error('Passwords do not match')
+    //   return
+    // }
 
     if (formData.password.length < 6) {
       toast.error('Password must be at least 6 characters')
@@ -45,6 +45,8 @@ export default function RegisterForm() {
 
     try {
       const result = await register(formData)
+      console.log("result:- 48",result)
+      console.log("formData:- 49",formData)
       if (result.success) {
         toast.success('Account created successfully!')
         navigate('/onboarding')
@@ -131,7 +133,7 @@ export default function RegisterForm() {
         placeholder="Enter your password"
       />
 
-      <Input
+      {/* <Input
         label="Confirm Password"
         name="confirmPassword"
         type={showConfirmPassword ? 'text' : 'password'}
@@ -149,7 +151,7 @@ export default function RegisterForm() {
           </button>
         }
         placeholder="Confirm your password"
-      />
+      /> */}
 
       <Button type="submit" className="w-full" disabled={loading}>
         {loading ? 'Creating Account...' : 'Create Account'}

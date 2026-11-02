@@ -12,56 +12,56 @@ export default function Navbar() {
 
   // Mock notifications data
   const notifications = [
-    // {
-    //   id: 1,
-    //   type: 'buddy_request',
-    //   title: 'New Buddy Request',
-    //   message: 'Sarah Johnson wants to connect with you',
-    //   time: '5 minutes ago',
-    //   unread: true,
-    //   avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=400',
-    //   icon: Users
-    // },
-    // {
-    //   id: 2,
-    //   type: 'workout_reminder',
-    //   title: 'Workout Reminder',
-    //   message: 'Your scheduled workout with Mike starts in 30 minutes',
-    //   time: '25 minutes ago',
-    //   unread: true,
-    //   icon: Calendar
-    // },
-    // {
-    //   id: 3,
-    //   type: 'challenge_update',
-    //   title: 'Challenge Update',
-    //   message: 'You moved up to 5th place in the 30-Day Push-Up Challenge!',
-    //   time: '2 hours ago',
-    //   unread: false,
-    //   icon: Trophy
-    // },
-    // {
-    //   id: 4,
-    //   type: 'message',
-    //   title: 'New Message',
-    //   message: 'Emma: "Great workout today! Same time tomorrow?"',
-    //   time: '4 hours ago',
-    //   unread: false,
-    //   avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400',
-    //   icon: MessageCircle
-    // },
-    // {
-    //   id: 5,
-    //   type: 'goal_milestone',
-    //   title: 'Goal Milestone',
-    //   message: 'Congratulations! You\'re 80% towards your weight loss goal',
-    //   time: '1 day ago',
-    //   unread: false,
-    //   icon: Trophy
-    // }
+    {
+      id: 1,
+      type: 'buddy_request',
+      title: 'New Buddy Request',
+      message: 'Sarah Johnson wants to connect with you',
+      time: '5 minutes ago',
+      unread: true,
+      avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=400',
+      icon: Users
+    },
+    {
+      id: 2,
+      type: 'workout_reminder',
+      title: 'Workout Reminder',
+      message: 'Your scheduled workout with Mike starts in 30 minutes',
+      time: '25 minutes ago',
+      unread: true,
+      icon: Calendar
+    },
+    {
+      id: 3,
+      type: 'challenge_update',
+      title: 'Challenge Update',
+      message: 'You moved up to 5th place in the 30-Day Push-Up Challenge!',
+      time: '2 hours ago',
+      unread: false,
+      icon: Trophy
+    },
+    {
+      id: 4,
+      type: 'message',
+      title: 'New Message',
+      message: 'Emma: "Great workout today! Same time tomorrow?"',
+      time: '4 hours ago',
+      unread: false,
+      avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400',
+      icon: MessageCircle
+    },
+    {
+      id: 5,
+      type: 'goal_milestone',
+      title: 'Goal Milestone',
+      message: 'Congratulations! You\'re 80% towards your weight loss goal',
+      time: '1 day ago',
+      unread: false,
+      icon: Trophy
+    }
   ]
 
-  const handleLogout=()=>{
+  const handleLogout = () => {
     logout()
     navigate("/auth/login", { replace: true })
   }
@@ -118,7 +118,7 @@ export default function Navbar() {
           <div className="flex items-center space-x-4">
             {/* Notifications */}
             <div className="relative">
-              <button 
+              <button
                 onClick={() => setShowNotifications(!showNotifications)}
                 className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg"
               >
@@ -143,15 +143,14 @@ export default function Navbar() {
                       )}
                     </div>
                   </div>
-                  
+
                   <div className="max-h-96 overflow-y-auto">
                     {notifications.length > 0 ? (
                       notifications.map((notification) => (
                         <div
                           key={notification.id}
-                          className={`p-4 border-l-4 hover:bg-gray-50 cursor-pointer ${getNotificationColor(notification.type)} ${
-                            notification.unread ? 'bg-blue-50' : ''
-                          }`}
+                          className={`p-4 border-l-4 hover:bg-gray-50 cursor-pointer ${getNotificationColor(notification.type)} ${notification.unread ? 'bg-blue-50' : ''
+                            }`}
                         >
                           <div className="flex items-start space-x-3">
                             {getNotificationIcon(notification)}
@@ -177,10 +176,10 @@ export default function Navbar() {
                       </div>
                     )}
                   </div>
-                  
+
                   <div className="p-4 border-t border-gray-200">
-                    <Link 
-                      to="/notifications" 
+                    <Link
+                      to="/notifications"
                       className="block text-center text-sm text-primary-600 hover:text-primary-700"
                       onClick={() => setShowNotifications(false)}
                     >
@@ -196,7 +195,7 @@ export default function Navbar() {
                 <Avatar src={user?.avatar} alt={user?.name} size="sm" />
                 <span className="text-sm font-medium text-gray-700">{user?.name}</span>
               </button>
-              
+
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                 <div className="py-1">
                   <Link to="/profile" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">

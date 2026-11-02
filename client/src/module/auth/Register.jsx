@@ -4,7 +4,7 @@ import SocialAuth from "./SocialAuth";
 
 export default function Register() {
   return (
-    <Card className="p-8">
+    <Card className="p-8 bg-white/80 shadow-lg backdrop:backdrop-blur-md">
       <div className="text-center mb-8">
         <h2 className="text-2xl font-bold text-gray-900">Create Account</h2>
         <p className="text-gray-600 mt-2">Join the FitnessBuddy community</p>
